@@ -1,6 +1,12 @@
 ---
 // Sección principal de la landing "en construcción" de Trigra.
 const year = new Date().getFullYear();
+
+// WhatsApp: número de contacto + mensaje predefinido.
+const whatsappPhone = '51934367672'; // formato internacional sin '+' ni espacios
+const whatsappMessage =
+  '¡Hola Trigra! 👋 Estoy interesado en adquirir uno de sus servicios. ¿Me pueden dar más información?';
+const whatsappUrl = `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(whatsappMessage)}`;
 ---
 
 <main
@@ -68,27 +74,33 @@ const year = new Date().getFullYear();
   <!-- Redes sociales -->
   <nav class="mt-8 flex items-center gap-2" aria-label="Redes sociales">
     <a
-      href="#"
+      href="https://www.facebook.com/Gdegato.3/"
+      target="_blank"
+      rel="noopener noreferrer"
       aria-label="Facebook"
-      class="flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#16202A] transition hover:bg-trigra-accent focus:outline-none focus:ring-2 focus:ring-trigra-accent/60"
+      class="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#16202A] transition hover:bg-trigra-accent focus:outline-none focus:ring-2 focus:ring-trigra-accent/60"
     >
-      <img src="/icons/icon-facebook.svg" alt="" aria-hidden="true" class="h-6 w-6" width="24" height="24" />
+      <img src="/icons/icon-facebook.svg" alt="" aria-hidden="true" class="h-8 w-8" width="32" height="32" />
     </a>
 
     <a
-      href="#"
+      href="https://www.instagram.com"
+      target="_blank"
+      rel="noopener noreferrer"
       aria-label="Instagram"
-      class="flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#16202A] transition hover:bg-trigra-accent focus:outline-none focus:ring-2 focus:ring-trigra-accent/60"
+      class="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#16202A] transition hover:bg-trigra-accent focus:outline-none focus:ring-2 focus:ring-trigra-accent/60"
     >
-      <img src="/icons/icon-instagram.svg" alt="" aria-hidden="true" class="h-6 w-6" width="24" height="24" />
+      <img src="/icons/icon-instagram.svg" alt="" aria-hidden="true" class="h-8 w-8" width="32" height="32" />
     </a>
 
     <a
-      href="#"
+      href={whatsappUrl}
+      target="_blank"
+      rel="noopener noreferrer"
       aria-label="WhatsApp"
-      class="flex h-[52px] w-[52px] items-center justify-center rounded-full bg-[#16202A] transition hover:bg-trigra-accent focus:outline-none focus:ring-2 focus:ring-trigra-accent/60"
+      class="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#16202A] transition hover:bg-trigra-accent focus:outline-none focus:ring-2 focus:ring-trigra-accent/60"
     >
-      <img src="/icons/icon-wsp.svg" alt="" aria-hidden="true" class="h-6 w-6" width="24" height="24" />
+      <img src="/icons/icon-wsp.svg" alt="" aria-hidden="true" class="h-8 w-8" width="32" height="32" />
     </a>
   </nav>
 
