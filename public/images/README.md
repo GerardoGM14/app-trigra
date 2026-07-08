@@ -19,3 +19,14 @@ El estilo ya está configurado en `src/styles/global.css`:
 
 Si cambias el nombre/formato del archivo, actualiza también la
 línea `url('/images/background-trigra.webp')` en `global.css`.
+
+## Logo de la landing
+
+Coloca el logo con este nombre exacto:
+
+```
+public/images/logo-trigra.png
+```
+
+Se muestra centrado en `src/components/ComingSoon.astro` (reemplaza al texto
+"trigra"). Si cambias el nombre, actualiza el `src` del `<img>` en ese componente.
