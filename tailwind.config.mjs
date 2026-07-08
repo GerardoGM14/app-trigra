@@ -28,7 +28,7 @@ export default {
       },
       backgroundImage: {
         'trigra-text-grad':
-          'linear-gradient(90deg, #93FE69 0%, #6ECFFF 100%)',
+          'linear-gradient(90deg, #6ECFFF 0%, #93FE69 100%)',
       },
       // Escala tipográfica derivada de textStyles.json
       fontSize: {
