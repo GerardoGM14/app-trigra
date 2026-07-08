@@ -14,7 +14,26 @@
   }
 
   body {
-    @apply bg-trigra-bg text-trigra-text antialiased;
+    @apply text-trigra-text antialiased;
+    min-height: 100vh;
+
+    /* Fondo = imagen + gradiente radial de marca ENCIMA (oscurece hacia los bordes).
+       El primer background-image queda como capa superior, por eso el gradiente va 1º.
+       Coloca tu imagen en: public/images/background.jpg
+       Los stops usan alpha para dejar ver la imagen por el centro. */
+    background-color: theme('colors.trigra.grad-3');
+    background-image:
+      radial-gradient(
+        circle at 50% 0%,
+        theme('colors.trigra.grad-1 / 0.55') 58%,
+        theme('colors.trigra.grad-2 / 0.90') 97%,
+        theme('colors.trigra.grad-3') 100%
+      ),
+      url('/images/background.jpg');
+    background-repeat: no-repeat, no-repeat;
+    background-position: center, center;
+    background-size: cover, cover;
+    background-attachment: fixed, fixed;
   }
 
   h1,

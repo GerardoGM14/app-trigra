@@ -11,12 +11,16 @@ export default {
       colors: {
         // Paleta base de la marca. Ajústala cuando definas los colores oficiales.
         trigra: {
-          bg: '#0B0B0F',
-          surface: '#14141C',
+          bg: '#0A0D10', // Vulcan/950 — base del fondo
+          surface: '#121A21',
           text: '#F5F5F7',
           muted: '#A1A1AA',
           accent: '#7C5CFC',
           'accent-soft': '#A78BFA',
+          // Stops del radial gradient de fondo (ver global.css)
+          'grad-1': '#121A21', // 58%
+          'grad-2': '#0C1014', // 97%
+          'grad-3': '#0A0D10', // 100% — Vulcan/950
         },
       },
       // Escala tipográfica derivada de textStyles.json
