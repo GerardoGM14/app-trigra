@@ -21,7 +21,14 @@ export default {
           'grad-1': '#121A21', // 58%
           'grad-2': '#0C1014', // 97%
           'grad-3': '#0A0D10', // 100% — Vulcan/950
+          // Linear gradient de texto ("soluciones digitales")
+          'text-grad-1': '#93FE69',
+          'text-grad-2': '#6ECFFF',
         },
+      },
+      backgroundImage: {
+        'trigra-text-grad':
+          'linear-gradient(90deg, #93FE69 0%, #6ECFFF 100%)',
       },
       // Escala tipográfica derivada de textStyles.json
       fontSize: {
