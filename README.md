@@ -100,6 +100,31 @@ En GitHub → **Settings → Secrets and variables → Actions → New repositor
 
 > Si prefieres crear el secret de la cuenta de servicio a mano: Google Cloud Console → IAM → Cuentas de servicio → genera una clave JSON con el rol **Firebase Hosting Admin**, y pega el JSON completo en `FIREBASE_SERVICE_ACCOUNT`.
 
+## 🔒 Seguridad (hardening)
+
+Firebase Hosting sirve el sitio desde la **CDN global de Google con protección DDoS**
+integrada, por lo que "tumbar" una landing estática es muy difícil. Encima de eso,
+`firebase.json` aplica cabeceras de seguridad HTTP a **todas** las rutas (buenas
+prácticas OWASP / auditables en una ISO 27001):
+
+| Cabecera                        | Qué protege                                             |
+| ------------------------------- | ------------------------------------------------------- |
+| `Strict-Transport-Security`     | Fuerza HTTPS 2 años (anti downgrade / MITM)             |
+| `X-Content-Type-Options`        | Anti MIME-sniffing                                      |
+| `X-Frame-Options: DENY`         | Anti clickjacking (no embebible en iframes)             |
+| `Referrer-Policy`               | No filtra la URL completa a terceros                    |
+| `Permissions-Policy`            | Desactiva cámara, micrófono, geolocalización, FLoC…     |
+| `Content-Security-Policy`       | Solo permite recursos propios + Google Fonts            |
+| `Cross-Origin-Opener-Policy`    | Aísla el origen (anti Spectre / side-channel)           |
+| `Cross-Origin-Resource-Policy`  | Exige CORP a recursos cross-origin                      |
+
+> Firebase **no admite comentarios** dentro de `firebase.json`; por eso la explicación
+> de cada cabecera vive aquí. Si más adelante añades scripts de terceros (analytics,
+> etc.), habrá que ampliar la `Content-Security-Policy` con sus dominios.
+
+Además, `src/pages/404.astro` genera un **404 propio** (con el diseño de marca) que
+Firebase sirve automáticamente para cualquier ruta inexistente.
+
 ## 🔄 Flujo CI/CD
 
 - **Push a `main`** → `deploy.yml` construye y publica a **producción** (canal `live`).
