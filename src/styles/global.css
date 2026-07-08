@@ -19,7 +19,7 @@
 
     /* Fondo = imagen + gradiente radial de marca ENCIMA (oscurece hacia los bordes).
        El primer background-image queda como capa superior, por eso el gradiente va 1º.
-       Coloca tu imagen en: public/images/background.jpg
+       Coloca tu imagen en: public/images/background-trigra.webp
        Los stops usan alpha para dejar ver la imagen por el centro. */
     background-color: theme('colors.trigra.grad-3');
     background-image:
@@ -29,7 +29,7 @@
         theme('colors.trigra.grad-2 / 0.90') 97%,
         theme('colors.trigra.grad-3') 100%
       ),
-      url('/images/background.jpg');
+      url('/images/background-trigra.webp');
     background-repeat: no-repeat, no-repeat;
     background-position: center, center;
     background-size: cover, cover;

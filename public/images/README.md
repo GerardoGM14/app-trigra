@@ -8,7 +8,7 @@ Una imagen aquí se referencia con ruta absoluta desde `/` (sin `public`).
 Coloca la imagen de fondo con este nombre exacto:
 
 ```
-public/images/background.jpg
+public/images/background-trigra.webp
 ```
 
 El estilo ya está configurado en `src/styles/global.css`:
@@ -17,5 +17,5 @@ El estilo ya está configurado en `src/styles/global.css`:
 - Encima lleva un **radial gradient de marca** que la oscurece hacia los bordes
   (deja ver la imagen por el centro, oscuro en las esquinas para que el texto se lea).
 
-Si usas otro formato/nombre (ej. `background.webp`), actualiza también la
-línea `url('/images/background.jpg')` en `global.css`.
+Si cambias el nombre/formato del archivo, actualiza también la
+línea `url('/images/background-trigra.webp')` en `global.css`.
