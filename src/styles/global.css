@@ -1,0 +1,25 @@
+/* Fuentes de la marca vía Google Fonts (Space Grotesk + Plus Jakarta Sans).
+   Roxa Sans es de pago; se usa la body como fallback donde aplique.
+   El @import debe ir antes que las directivas @tailwind. */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: theme('fontFamily.body');
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-trigra-bg text-trigra-text antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: theme('fontFamily.display');
+  }
+}

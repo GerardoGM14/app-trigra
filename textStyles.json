@@ -1,0 +1,225 @@
+{
+  "fileName": "TRIGRA",
+  "textStyles": [
+    {
+      "name": "Display",
+      "fontFamily": "Space Grotesk",
+      "fontWeight": "Bold",
+      "fontSize": 48,
+      "letterSpacing": {
+        "unit": "PIXELS",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Large Title",
+      "fontFamily": "Space Grotesk",
+      "fontWeight": "Bold",
+      "fontSize": 40,
+      "letterSpacing": {
+        "unit": "PIXELS",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Title 1",
+      "fontFamily": "Space Grotesk",
+      "fontWeight": "Bold",
+      "fontSize": 32,
+      "letterSpacing": {
+        "unit": "PIXELS",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Title 2",
+      "fontFamily": "Space Grotesk",
+      "fontWeight": "Bold",
+      "fontSize": 28,
+      "letterSpacing": {
+        "unit": "PIXELS",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Title 3",
+      "fontFamily": "Space Grotesk",
+      "fontWeight": "Bold",
+      "fontSize": 24,
+      "letterSpacing": {
+        "unit": "PIXELS",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Subtitle 1",
+      "fontFamily": "Space Grotesk",
+      "fontWeight": "Medium",
+      "fontSize": 20,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Subtitle 2",
+      "fontFamily": "Space Grotesk",
+      "fontWeight": "Bold",
+      "fontSize": 18,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Body 1",
+      "fontFamily": "Plus Jakarta Sans",
+      "fontWeight": "Regular",
+      "fontSize": 16,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Body 1 Strong",
+      "fontFamily": "Plus Jakarta Sans",
+      "fontWeight": "Medium",
+      "fontSize": 16,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Body 1 Stronger",
+      "fontFamily": "Plus Jakarta Sans",
+      "fontWeight": "Bold",
+      "fontSize": 16,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Body 2",
+      "fontFamily": "Plus Jakarta Sans",
+      "fontWeight": "Regular",
+      "fontSize": 18,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Body 2 Strong",
+      "fontFamily": "Plus Jakarta Sans",
+      "fontWeight": "Medium",
+      "fontSize": 18,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Caption 1",
+      "fontFamily": "Plus Jakarta Sans",
+      "fontWeight": "Regular",
+      "fontSize": 14,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Caption 1 Strong",
+      "fontFamily": "Plus Jakarta Sans",
+      "fontWeight": "SemiBold",
+      "fontSize": 14,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Caption 1 Stronger",
+      "fontFamily": "Plus Jakarta Sans",
+      "fontWeight": "Bold",
+      "fontSize": 14,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Caption 2",
+      "fontFamily": "Plus Jakarta Sans",
+      "fontWeight": "Regular",
+      "fontSize": 12,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Caption 2 Strong",
+      "fontFamily": "Plus Jakarta Sans",
+      "fontWeight": "SemiBold",
+      "fontSize": 12,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Label",
+      "fontFamily": "Roxa Sans",
+      "fontWeight": "Medium",
+      "fontSize": 14,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Action 1",
+      "fontFamily": "Space Grotesk",
+      "fontWeight": "Medium",
+      "fontSize": 18,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    },
+    {
+      "name": "Action 2",
+      "fontFamily": "Space Grotesk",
+      "fontWeight": "Medium",
+      "fontSize": 16,
+      "letterSpacing": {
+        "unit": "PERCENT",
+        "value": 0
+      },
+      "textCase": "ORIGINAL"
+    }
+  ]
+}
