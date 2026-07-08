@@ -53,4 +53,13 @@
     -webkit-text-fill-color: transparent;
     color: transparent;
   }
+
+  /* Misma técnica, dirección invertida (verde → celeste). */
+  .text-gradient-reverse {
+    background-image: linear-gradient(90deg, #93fe69 0%, #6ecfff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
 }
