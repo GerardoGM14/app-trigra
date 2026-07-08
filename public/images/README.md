@@ -32,3 +32,12 @@ Se muestra centrado en `src/components/ComingSoon.astro` (reemplaza al texto
 "trigra"). Si cambias el nombre, actualiza el `src` del `<img>` en ese componente.
 
 > Los iconos van en `public/icons/` (ver README de esa carpeta).
+
+## Favicon (icono de la pestaña)
+
+```
+public/images/icono-logo.png
+```
+
+Se referencia en `src/layouts/BaseLayout.astro` (`<link rel="icon">`) y aparece
+en la pestaña del navegador.
