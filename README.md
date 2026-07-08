@@ -79,26 +79,22 @@ Tu sitio quedará en `https://TU_PROJECT_ID.web.app`.
 
 ### 4. Configurar el deploy automático (GitHub Actions)
 
-El repositorio ya trae los workflows listos. Solo necesitas los **secrets** en GitHub.
-
-**a) Generar la cuenta de servicio** (la forma más simple):
+El repositorio ya trae los workflows listos. La cuenta de servicio se genera con:
 
 ```bash
 firebase init hosting:github
 ```
 
-Este comando conecta tu repo de GitHub, crea la cuenta de servicio y **añade automáticamente** el secret `FIREBASE_SERVICE_ACCOUNT` al repositorio. Cuando pregunte por sobrescribir los workflows, responde **No** (ya los tienes creados aquí).
+Este comando crea la cuenta de servicio y **sube automáticamente** el secret
+`FIREBASE_SERVICE_ACCOUNT_TRIGRA_APP` al repositorio. Cuando pregunte por sobrescribir
+workflows o configurar auto-deploy en PR, responde **No** (ya los tenemos aquí).
 
-**b) Añadir manualmente el ID del proyecto como secret:**
+Los workflows usan ese secret y el `projectId: trigra-app` está fijo en los `.yml`,
+así que **no hace falta ningún secret adicional**.
 
-En GitHub → **Settings → Secrets and variables → Actions → New repository secret**:
-
-| Secret                     | Valor                                                  |
-| -------------------------- | ------------------------------------------------------ |
-| `FIREBASE_SERVICE_ACCOUNT` | (lo crea `firebase init hosting:github` automáticamente) |
-| `FIREBASE_PROJECT_ID`      | Tu Project ID (ej. `trigra-1a2b3`)                     |
-
-> Si prefieres crear el secret de la cuenta de servicio a mano: Google Cloud Console → IAM → Cuentas de servicio → genera una clave JSON con el rol **Firebase Hosting Admin**, y pega el JSON completo en `FIREBASE_SERVICE_ACCOUNT`.
+> Nota: el nombre del secret incluye el sufijo del proyecto
+> (`FIREBASE_SERVICE_ACCOUNT_TRIGRA_APP`). Si regeneras el proyecto con otro ID,
+> actualiza ese nombre en `deploy.yml` y `preview.yml`.
 
 ## 🔒 Seguridad (hardening)
 
