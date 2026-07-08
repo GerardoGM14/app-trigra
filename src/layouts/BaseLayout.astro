@@ -1,5 +1,6 @@
 ---
 import '@styles/global.css';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
   title?: string;
@@ -21,6 +22,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+
+    <!-- Transiciones suaves entre vistas/rutas -->
+    <ClientRouter />
 
     <title>{title}</title>
     <meta name="description" content={description} />
