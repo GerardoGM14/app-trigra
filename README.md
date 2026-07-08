@@ -16,6 +16,8 @@ proyecto-trigra/
 │   ├── assets/               # Imágenes/recursos procesados por Astro
 │   ├── components/           # Componentes reutilizables
 │   │   └── ComingSoon.astro
+│   ├── design/               # Recursos/tokens de diseño (export de Figma)
+│   │   └── textStyles.json
 │   ├── layouts/              # Plantillas de página
 │   │   └── BaseLayout.astro
 │   ├── pages/                # Rutas (cada archivo = una ruta)
@@ -31,7 +33,7 @@ proyecto-trigra/
 
 ## 🎨 Sistema de diseño
 
-Los tokens de tipografía provienen de `textStyles.json` (export de Figma):
+Los tokens de tipografía provienen de `src/design/textStyles.json` (export de Figma):
 
 - **Space Grotesk** → titulares y botones (`font-display`)
 - **Plus Jakarta Sans** → cuerpo de texto (`font-body`)
