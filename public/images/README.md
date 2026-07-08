@@ -30,3 +30,11 @@ public/images/logo-trigra.png
 
 Se muestra centrado en `src/components/ComingSoon.astro` (reemplaza al texto
 "trigra"). Si cambias el nombre, actualiza el `src` del `<img>` en ese componente.
+
+## Icono del pill "Página en construcción"
+
+```
+public/images/icon-obras.webp
+```
+
+Se muestra dentro del pill de estado en `src/components/ComingSoon.astro`.
