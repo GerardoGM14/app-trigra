@@ -1,20 +1,17 @@
-# Iconos
+# Íconos
 
-Iconos estáticos del sitio. Se referencian con ruta absoluta desde `/` (sin `public`).
+Íconos y decoraciones del sitio. Se referencian desde `/icons/…`.
 
-## Icono del pill "Página en construcción"
+Los íconos de **soluciones** (`icon-sistemas.svg`, `icon-automatizacion.svg`…) y de **pasos del proceso**
+(`icon-paso-<slug>.svg`) se insertan en el HTML al compilar y su color se reemplaza por el del texto,
+así que funcionan con cualquier color de origen. Si falta alguno, se usa un ícono de respaldo.
 
-```
-public/icons/icon-obras.webp
-```
-
-Se muestra dentro del pill de estado en `src/components/ComingSoon.astro`
-(`src="/icons/icon-obras.webp"`). Si cambias el nombre, actualiza ese `<img>`.
-
-## Ilustración de la página 404
-
-```
-public/icons/icon-error404.png
-```
-
-Se muestra en `src/pages/404.astro` (`src="/icons/icon-error404.png"`).
+| Archivo | Uso |
+| --- | --- |
+| `icon-red.svg` · `icon-red-v2.svg` | Redes decorativas de fondo |
+| `icon-<solución>.svg` | Ícono de cada card de solución (`icon-web.svg` para Desarrollo Web) |
+| `icon-paso-<slug>.svg` | Ícono de cada paso del proceso |
+| `icon-terminal.svg` | Ícono de "Stack tecnológico" en el modal de proyecto |
+| `icon-wsp.svg` · `icon-facebook.svg` · `icon-instagram.svg` · `icon-linkedin.svg` | Botón flotante de redes |
+| `icon-linkedin-card.svg` | Logo de LinkedIn de la card del fundador |
+| `icon-obras.webp` · `icon-error404.png` | `/proximamente` y página 404 |

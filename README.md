@@ -1,43 +1,31 @@
-# Trigra — Landing
+# TRIGRA — Sitio web
 
-Landing page (página "en construcción" / _coming soon_) del emprendimiento **Trigra**, construida con [Astro](https://astro.build) + [Tailwind CSS](https://tailwindcss.com) y desplegada en **Firebase Hosting** mediante **GitHub Actions**.
+🇪🇸 Español · [🇺🇸 English](README.en.md)
 
-## 🗂️ Estructura del proyecto
+Sitio web de **TRIGRA**, empresa de soluciones digitales: desarrollo web, sistemas a medida, automatización de procesos e inteligencia artificial.
 
-```
-proyecto-trigra/
-├── .github/
-│   └── workflows/
-│       ├── deploy.yml        # CI/CD: deploy a producción al hacer push a main
-│       └── preview.yml       # Preview temporal por cada Pull Request
-├── public/                   # Archivos estáticos (favicon, robots, imágenes públicas)
-│   └── favicon.svg
-├── src/
-│   ├── assets/               # Imágenes/recursos procesados por Astro
-│   ├── components/           # Componentes reutilizables
-│   │   └── ComingSoon.astro
-│   ├── design/               # Recursos/tokens de diseño (export de Figma)
-│   │   └── textStyles.json
-│   ├── layouts/              # Plantillas de página
-│   │   └── BaseLayout.astro
-│   ├── pages/                # Rutas (cada archivo = una ruta)
-│   │   └── index.astro       # Única vista de la landing
-│   └── styles/
-│       └── global.css        # Tailwind + fuentes de marca
-├── astro.config.mjs
-├── tailwind.config.mjs       # Tokens de marca (colores + tipografías)
-├── firebase.json             # Config de Firebase Hosting
-├── .firebaserc               # ID del proyecto Firebase
-└── package.json
-```
+🌐 **En vivo:** [trigra-app.web.app](https://trigra-app.web.app)
 
-## 🎨 Sistema de diseño
+Construido con [Astro](https://astro.build) + [Tailwind CSS](https://tailwindcss.com), 100 % estático, desplegado en **Firebase Hosting** con **GitHub Actions**.
 
-Los tokens de tipografía provienen de `src/design/textStyles.json` (export de Figma):
+---
 
-- **Space Grotesk** → titulares y botones (`font-display`)
-- **Plus Jakarta Sans** → cuerpo de texto (`font-body`)
-- **Roxa Sans** → labels (fuente de pago; usa `font-body` como fallback)
+## ✨ Qué incluye
+
+Una sola página (`/`) con navegación por secciones:
+
+| Sección | Contenido |
+| --- | --- |
+| **Hero** | Titular, llamados a la acción y cifras con contador animado |
+| **Proyectos** | Lista con barra animada y vista previa; modal *Ver caso completo* con galería (web / panel) y carrusel a pantalla completa |
+| **Soluciones** | 8 servicios en cards, cada uno con su modal de detalle |
+| **Tecnologías** | Cinta de logos en bucle infinito |
+| **Proceso** | 4 pasos en cards que se arrastran con inercia |
+| **Nosotros** | Misión, visión y card del fundador |
+| **Contacto** | Formulario que valida y envía el mensaje por WhatsApp (se autocompleta según el botón de origen) |
+| **Footer** | Navegación y modales de Política de Privacidad y Términos |
+
+Además: navbar con indicador deslizante que se oculta al llegar al footer, botón flotante de redes en abanico, animaciones de entrada al hacer scroll y la landing original *en construcción* conservada en [`/proximamente`](https://trigra-app.web.app/proximamente).
 
 ## 🚀 Desarrollo local
 
@@ -47,85 +35,88 @@ Requiere **Node.js 20+**.
 npm install       # instalar dependencias
 npm run dev       # servidor local en http://localhost:4321
 npm run build     # build de producción → dist/
-npm run preview   # previsualizar el build
+npm run preview   # previsualizar el build (úsalo para medir con Lighthouse)
 ```
 
-## 🔥 Configurar Firebase (primera vez)
+> Mide el rendimiento sobre `npm run build && npm run preview`, no sobre `npm run dev`: el modo desarrollo no empaqueta ni comprime y da puntuaciones engañosas.
 
-Aún no tienes el proyecto Firebase creado. Sigue estos pasos:
+## 🗂️ Estructura
 
-### 1. Crear el proyecto en Firebase
-
-1. Entra a la [consola de Firebase](https://console.firebase.google.com).
-2. **Agregar proyecto** → nómbralo (ej. `trigra`) → crea el proyecto.
-3. Copia el **Project ID** (ej. `trigra-1a2b3`).
-4. Pega ese ID en `.firebaserc` reemplazando `TU_FIREBASE_PROJECT_ID`.
-
-### 2. Instalar Firebase CLI y hacer login
-
-```bash
-npm install -g firebase-tools
-firebase login
+```
+src/
+├── components/     # Una sección o pieza de UI por archivo (Hero, Proyectos, SolucionModal…)
+├── data/           # Contenido editable: proyectos, soluciones, proceso, tecnologías, legales, redes
+├── layouts/        # BaseLayout: <head>, fuentes, metas SEO
+├── pages/          # index (sitio), proximamente, 404
+├── scripts/        # Lógica compartida: modales (modal.ts) y animación al hacer scroll (reveal.ts)
+├── styles/         # global.css: Tailwind, animaciones y estilos de modales
+└── utils/          # Helpers de compilación: medidas de imágenes, SVG en línea
+public/
+├── icons/          # Íconos SVG (soluciones, pasos, redes, decoraciones)
+└── images/         # Fotos y capturas, organizadas por sección
 ```
 
-### 3. (Opcional) Primer deploy manual para verificar
+## ✏️ Cómo editar el contenido
+
+La mayoría de textos **no están en los componentes** sino en `src/data/`, así que se cambian sin tocar el diseño:
+
+| Quiero cambiar… | Archivo |
+| --- | --- |
+| Proyectos (textos, stack, URL, galería) | `src/data/proyectos.ts` |
+| Soluciones y su modal | `src/data/soluciones.ts` |
+| Pasos del proceso | `src/data/proceso.ts` |
+| Logos de la cinta de tecnologías | `src/data/tecnologias.ts` |
+| Política de Privacidad / Términos | `src/data/legal.ts` |
+| Redes sociales, número y mensaje de WhatsApp | `src/data/social.ts` |
+
+### Imágenes
+
+Las imágenes se detectan **al compilar**: si el archivo existe se muestra; si no, aparece un marcador. Convenciones:
+
+| Uso | Ruta |
+| --- | --- |
+| Miniatura de proyecto / captura del modal | `public/images/proyectos/<slug>.webp` · `<slug>-full.webp` |
+| Galería del modal de proyecto | `public/images/proyectos/<slug>/web-1..4.webp` · `admin-1..4.webp` (+ `-lg` para el carrusel) |
+| Solución | `public/images/soluciones/<slug>.webp` |
+| Paso del proceso | `public/images/proceso/<slug>.webp` |
+| Logo de tecnología | `public/images/tecnologias/<slug>.svg` (o `.webp`/`.png`) |
+| Foto del equipo | `public/images/equipo/<slug>.webp` |
+| Ícono de solución / paso | `public/icons/icon-<nombre>.svg` · `icon-paso-<slug>.svg` |
+
+> **Optimiza antes de subir.** Las capturas suelen venir como PNG de varios MB. Conviértelas a WebP del tamaño en que se muestran (con [`sharp`](https://sharp.pixelplumbing.com), que ya viene con Astro). Los íconos SVG se insertan en el HTML y toman el color del texto, así que su color original no importa.
+
+## 🔄 Despliegue (CI/CD)
+
+- **Push a `main`** → `deploy.yml` construye y publica a **producción** (canal `live`).
+- **Pull Request** → `preview.yml` publica una **URL de preview temporal** para revisar antes de mergear.
+
+El secret `FIREBASE_SERVICE_ACCOUNT_TRIGRA_APP` ya está configurado en el repositorio y el `projectId: trigra-app` está fijo en los workflows. Para un deploy manual:
 
 ```bash
 npm run build
 firebase deploy --only hosting
 ```
 
-Tu sitio quedará en `https://TU_PROJECT_ID.web.app`.
+> ⚠️ Todo push a `main` sale a producción. Para cambios grandes, trabaja en una rama y abre un Pull Request.
 
-### 4. Configurar el deploy automático (GitHub Actions)
+## 🔒 Seguridad y rendimiento
 
-El repositorio ya trae los workflows listos. La cuenta de servicio se genera con:
+`firebase.json` aplica cabeceras de seguridad a todas las rutas: HSTS, `X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy`, COOP/CORP y una **Content-Security-Policy estricta** (solo recursos propios, `script-src 'self'`). Firebase no admite comentarios en ese archivo, por eso la explicación vive aquí.
 
-```bash
-firebase init hosting:github
-```
+Decisiones que conviene respetar al agregar código:
 
-Este comando crea la cuenta de servicio y **sube automáticamente** el secret
-`FIREBASE_SERVICE_ACCOUNT_TRIGRA_APP` al repositorio. Cuando pregunte por sobrescribir
-workflows o configurar auto-deploy en PR, responde **No** (ya los tenemos aquí).
+- **Sin scripts en línea.** El CSP los bloquea; por eso `astro.config.mjs` usa `assetsInlineLimit: 0` y no se usan atributos como `onclick` u `onload`.
+- **Fuentes propias.** Space Grotesk y Plus Jakarta Sans se sirven desde el sitio con `@fontsource` (sin Google Fonts).
+- **Sin `backdrop-filter: blur`** sobre contenido que se desplaza ni en elementos fijos: causa lag al hacer scroll.
+- **Imágenes diferidas.** Las de los modales se precargan al acercarse al botón; el fondo del footer se pide al llegar a él.
+- Si se agrega un servicio de terceros (analytics, formularios), hay que ampliar la CSP con su dominio.
 
-Los workflows usan ese secret y el `projectId: trigra-app` está fijo en los `.yml`,
-así que **no hace falta ningún secret adicional**.
+## 🎨 Sistema de diseño
 
-> Nota: el nombre del secret incluye el sufijo del proyecto
-> (`FIREBASE_SERVICE_ACCOUNT_TRIGRA_APP`). Si regeneras el proyecto con otro ID,
-> actualiza ese nombre en `deploy.yml` y `preview.yml`.
-
-## 🔒 Seguridad (hardening)
-
-Firebase Hosting sirve el sitio desde la **CDN global de Google con protección DDoS**
-integrada, por lo que "tumbar" una landing estática es muy difícil. Encima de eso,
-`firebase.json` aplica cabeceras de seguridad HTTP a **todas** las rutas (buenas
-prácticas OWASP / auditables en una ISO 27001):
-
-| Cabecera                        | Qué protege                                             |
-| ------------------------------- | ------------------------------------------------------- |
-| `Strict-Transport-Security`     | Fuerza HTTPS 2 años (anti downgrade / MITM)             |
-| `X-Content-Type-Options`        | Anti MIME-sniffing                                      |
-| `X-Frame-Options: DENY`         | Anti clickjacking (no embebible en iframes)             |
-| `Referrer-Policy`               | No filtra la URL completa a terceros                    |
-| `Permissions-Policy`            | Desactiva cámara, micrófono, geolocalización, FLoC…     |
-| `Content-Security-Policy`       | Solo permite recursos propios + Google Fonts            |
-| `Cross-Origin-Opener-Policy`    | Aísla el origen (anti Spectre / side-channel)           |
-| `Cross-Origin-Resource-Policy`  | Exige CORP a recursos cross-origin                      |
-
-> Firebase **no admite comentarios** dentro de `firebase.json`; por eso la explicación
-> de cada cabecera vive aquí. Si más adelante añades scripts de terceros (analytics,
-> etc.), habrá que ampliar la `Content-Security-Policy` con sus dominios.
-
-Además, `src/pages/404.astro` genera un **404 propio** (con el diseño de marca) que
-Firebase sirve automáticamente para cualquier ruta inexistente.
-
-## 🔄 Flujo CI/CD
-
-- **Push a `main`** → `deploy.yml` construye y publica a **producción** (canal `live`).
-- **Pull Request** → `preview.yml` genera un **canal de preview temporal** con URL única para revisar los cambios antes de mergear.
+- **Space Grotesk** → titulares y botones (`font-display`)
+- **Plus Jakarta Sans** → texto (`font-body`)
+- Colores de marca en `tailwind.config.mjs`; tokens tipográficos exportados de Figma en `src/design/textStyles.json`.
 
 ## 📄 Licencia
 
-Privado — © Trigra.
+**Software propietario.** © 2026 TRIGRA. Todos los derechos reservados. No se permite copiar, modificar, distribuir ni usar este código sin autorización escrita. Ver [LICENSE](LICENSE).
