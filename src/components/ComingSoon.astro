@@ -1,12 +1,8 @@
 ---
 // Sección principal de la landing "en construcción" de Trigra.
-const year = new Date().getFullYear();
+import SocialLinks from '@components/SocialLinks.astro';
 
-// WhatsApp: número de contacto + mensaje predefinido.
-const whatsappPhone = "51934367672"; // formato internacional sin '+' ni espacios
-const whatsappMessage =
-  "¡Hola Trigra! Estoy interesado en adquirir uno de sus servicios. ¿Me pueden dar más información?";
-const whatsappUrl = `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(whatsappMessage)}`;
+const year = new Date().getFullYear();
 ---
 
 <main
@@ -15,7 +11,7 @@ const whatsappUrl = `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(wh
   <!-- Logo de Trigra -->
   <h1 class="sr-only">Trigra</h1>
   <img
-    src="/images/logo-trigra.png"
+    src="/images/logo-trigra.webp"
     alt="Trigra"
     transition:name="logo-trigra"
     class="w-64 max-w-[80vw] sm:w-80 md:w-[24rem]"
@@ -53,58 +49,7 @@ const whatsappUrl = `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(wh
   </p>
 
   <!-- Redes sociales -->
-  <nav class="mt-20 flex items-center gap-4" aria-label="Redes sociales">
-    <a
-      href="https://www.facebook.com/Gdegato.3/"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Facebook"
-      class="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#16202A] transition hover:bg-[#22303F] focus:outline-none focus:ring-2 focus:ring-white/20"
-    >
-      <img
-        src="/icons/icon-facebook.svg"
-        alt=""
-        aria-hidden="true"
-        class="h-8 w-8"
-        width="32"
-        height="32"
-      />
-    </a>
-
-    <a
-      href="https://www.instagram.com/gerardogm_14/"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Instagram"
-      class="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#16202A] transition hover:bg-[#22303F] focus:outline-none focus:ring-2 focus:ring-white/20"
-    >
-      <img
-        src="/icons/icon-instagram.svg"
-        alt=""
-        aria-hidden="true"
-        class="h-8 w-8"
-        width="32"
-        height="32"
-      />
-    </a>
-
-    <a
-      href={whatsappUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="WhatsApp"
-      class="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#16202A] transition hover:bg-[#22303F] focus:outline-none focus:ring-2 focus:ring-white/20"
-    >
-      <img
-        src="/icons/icon-wsp.svg"
-        alt=""
-        aria-hidden="true"
-        class="h-8 w-8"
-        width="32"
-        height="32"
-      />
-    </a>
-  </nav>
+  <SocialLinks class="mt-20" />
 
   <!-- Footer -->
   <footer class="absolute bottom-6 text-sm text-trigra-muted">

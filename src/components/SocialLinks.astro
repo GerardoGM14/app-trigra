@@ -1,0 +1,49 @@
+---
+// Botones de redes sociales de Trigra (WhatsApp, Facebook, Instagram).
+// Se usa en la página principal (vertical) y en /proximamente (horizontal).
+import { networks, type Network } from '@data/social';
+
+interface Props {
+  vertical?: boolean;
+  size?: 'md' | 'lg';
+  order?: Network[];
+  class?: string;
+}
+
+const {
+  vertical = false,
+  size = 'lg',
+  order = ['facebook', 'instagram', 'whatsapp'],
+  class: className = '',
+} = Astro.props;
+
+const sizes = {
+  md: { box: 'h-12 w-12 rounded-xl', icon: 'h-6 w-6' },
+  lg: { box: 'h-16 w-16 rounded-2xl', icon: 'h-8 w-8' },
+};
+---
+
+<nav
+  class:list={['flex items-center gap-4', vertical ? 'flex-col' : 'flex-row', className]}
+  aria-label="Redes sociales"
+>
+  {
+    order.map((key) => {
+      const net = networks[key];
+      return (
+        <a
+          href={net.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={net.label}
+          class:list={[
+            'flex items-center justify-center bg-[#16202A] transition hover:bg-[#22303F] focus:outline-none focus:ring-2 focus:ring-white/20',
+            sizes[size].box,
+          ]}
+        >
+          <img src={net.icon} alt="" aria-hidden="true" class={sizes[size].icon} width="32" height="32" />
+        </a>
+      );
+    })
+  }
+</nav>
