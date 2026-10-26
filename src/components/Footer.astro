@@ -1,0 +1,148 @@
+---
+// Footer: continúa el color de la sección de Contacto (#0D141C) y se degrada
+// hacia la foto background-trigra (versión optimizada para el footer).
+import LegalModal from '@components/LegalModal.astro';
+import { legales } from '@data/legal';
+
+const year = new Date().getFullYear();
+
+const links = [
+  { label: 'Proyectos', href: '#proyectos' },
+  { label: 'Soluciones', href: '#soluciones' },
+  { label: 'Proceso', href: '#proceso' },
+  { label: 'Nosotros', href: '#nosotros' },
+  { label: 'Contáctanos', href: '#contacto' },
+];
+
+// Enlaces legales: cada uno abre su modal (textos en src/data/legal.ts)
+const legalLinks = [
+  { label: 'Política de Privacidad', modal: 'modal-privacidad' },
+  { label: 'Términos y Condiciones', modal: 'modal-terminos' },
+];
+---
+
+<footer class="site-footer relative w-full overflow-hidden text-trigra-text">
+  <!-- Redes decorativas en las esquinas inferiores -->
+  <img
+    src="/icons/icon-red.svg"
+    alt=""
+    aria-hidden="true"
+    class="pointer-events-none absolute bottom-0 left-0 w-40 -scale-y-100 select-none opacity-40 sm:w-56"
+    width="360"
+    height="399"
+    loading="lazy"
+  />
+  <img
+    src="/icons/icon-red.svg"
+    alt=""
+    aria-hidden="true"
+    class="pointer-events-none absolute bottom-0 right-0 w-40 rotate-180 select-none opacity-40 sm:w-56"
+    width="360"
+    height="399"
+    loading="lazy"
+  />
+
+  <div class="relative mx-auto flex w-full max-w-7xl flex-col items-center px-4 pb-10 pt-24 sm:px-6 sm:pt-28 lg:px-8">
+    <!-- Logo -->
+    <a href="#inicio" class="rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30" aria-label="Trigra — volver al inicio">
+      <img src="/images/logo-trigra.webp" alt="Trigra" class="w-64 max-w-[75vw] sm:w-[27rem]" width="800" height="235" loading="lazy" />
+    </a>
+
+    <!-- Navegación -->
+    <nav class="mt-10" aria-label="Navegación del pie de página">
+      <ul class="flex flex-wrap justify-center gap-x-8 gap-y-3">
+        {
+          links.map((l) => (
+            <li>
+              <a href={l.href} class="font-display text-sm text-gray-200 transition-colors hover:text-white sm:text-base">
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+
+    <!-- Línea inferior -->
+    <div class="mt-16 flex w-full flex-col items-center gap-4 text-sm text-gray-300 sm:mt-20 sm:flex-row sm:justify-between">
+      <p>© {year} TRIGRA. Todos los derechos reservados.</p>
+      <ul class="flex flex-wrap justify-center gap-x-8 gap-y-2">
+        {
+          legalLinks.map((l) => (
+            <li>
+              <button
+                type="button"
+                data-open-modal={l.modal}
+                aria-haspopup="dialog"
+                class="rounded transition-colors hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+              >
+                {l.label}
+              </button>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+
+  <!-- Modales legales -->
+  {legales.map((doc) => <LegalModal doc={doc} />)}
+</footer>
+
+<style>
+  /* Capas (de arriba hacia abajo), según Figma:
+     1. Lineal vertical: Grey-8 #0D141C (continúa la sección de Contacto) → Grey-4 #060A0F, oscureciendo hasta abajo
+     2. Sólido #030B13 al 20%
+     3. Radial: #030B13 0% en el centro → Grey-8 #0D141C 100% en los bordes
+     4. Foto background-trigra-footer.webp */
+  .site-footer {
+    background-color: #0d141c;
+    background-image:
+      linear-gradient(
+        to bottom,
+        #0d141c 0%,
+        rgb(6 10 15 / 0.82) 45%,
+        rgb(6 10 15 / 0.5) 100%
+      ),
+      linear-gradient(rgb(3 11 19 / 0.2), rgb(3 11 19 / 0.2)),
+      radial-gradient(ellipse at 50% 70%, rgb(3 11 19 / 0) 0%, #0d141c 100%);
+    background-repeat: no-repeat;
+    background-size: cover;
+    /* La foto se desplaza hacia abajo dentro del footer */
+    background-position: center 40%;
+  }
+  /* La foto se agrega recién cuando el footer está por aparecer (ver script),
+     así no se descarga al cargar la página */
+  .site-footer.has-photo {
+    background-image:
+      linear-gradient(
+        to bottom,
+        #0d141c 0%,
+        rgb(6 10 15 / 0.82) 45%,
+        rgb(6 10 15 / 0.5) 100%
+      ),
+      linear-gradient(rgb(3 11 19 / 0.2), rgb(3 11 19 / 0.2)),
+      radial-gradient(ellipse at 50% 70%, rgb(3 11 19 / 0) 0%, #0d141c 100%),
+      url('/images/background-trigra-footer.webp');
+  }
+</style>
+
+<script>
+  // Carga diferida de la foto de fondo: se pide al estar a ~600px del footer
+  function initFooter() {
+    const footer = document.querySelector('.site-footer');
+    if (!footer || footer.classList.contains('has-photo')) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          footer.classList.add('has-photo');
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '600px 0px' }
+    );
+    observer.observe(footer);
+  }
+  document.addEventListener('astro:page-load', initFooter);
+</script>

@@ -1,0 +1,115 @@
+---
+// Modal legal (Política de Privacidad, Términos y Condiciones). Reutilizable.
+// Mismo estilo que el modal de soluciones; se abre con data-open-modal="<id>".
+// Abrir/cerrar animado, Esc y clic fuera: src/scripts/modal.ts + estilos .app-modal.
+import type { LegalDoc } from '@data/legal';
+
+interface Props {
+  doc: LegalDoc;
+}
+
+const { doc } = Astro.props;
+
+// Íconos de línea (24×24)
+const icons: Record<LegalDoc['icon'], string> = {
+  privacidad: '<path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6z"/><path d="m9 12 2 2 4-4"/>',
+  terminos: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>',
+};
+---
+
+<dialog
+  id={doc.id}
+  class="app-modal legal-modal m-auto w-[min(600px,calc(100%-2rem))] max-h-[calc(100dvh-2rem)] overflow-hidden rounded-2xl border-0 bg-[#F1F6FC] p-0 text-gray-900 shadow-2xl shadow-black/40"
+  aria-labelledby={`${doc.id}-title`}
+>
+  <!-- Cerrar -->
+  <button
+    type="button"
+    data-close-modal
+    class="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white text-gray-800 transition-colors hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#007BC5]"
+    aria-label="Cerrar"
+  >
+    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+      <path d="M6 6l12 12M18 6L6 18"></path>
+    </svg>
+  </button>
+
+  <!-- Contenido con scroll (barra oculta) -->
+  <div class="legal-scroll max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain">
+    <!-- Cabecera de marca + ícono superpuesto (en lugar de la foto del modal de soluciones) -->
+    <div class="relative">
+      <div class="relative h-28 overflow-hidden bg-gradient-to-br from-[#0D141C] via-[#121A21] to-[#0A3A66] sm:h-32">
+        <img
+          src="/icons/icon-red.svg"
+          alt=""
+          aria-hidden="true"
+          class="pointer-events-none absolute right-0 top-0 w-40 -scale-x-100 select-none opacity-[0.69]"
+          width="360"
+          height="399"
+          loading="lazy"
+        />
+      </div>
+      <span class="absolute -bottom-6 left-6 flex h-12 w-12 items-center justify-center rounded-full bg-[#0B66B1] text-white sm:left-8" aria-hidden="true">
+        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" set:html={icons[doc.icon]} />
+      </span>
+    </div>
+
+    <div class="px-6 pb-7 pt-10 sm:px-8 sm:pb-8">
+      <h3 id={`${doc.id}-title`} data-modal-enter style="--enter-delay: 60ms" class="font-display text-xl/tight font-bold sm:text-[1.4rem]/tight">
+        <span class="text-[#0B66B1]">{doc.highlight}</span>
+        {doc.title}
+      </h3>
+      <p data-modal-enter style="--enter-delay: 120ms" class="mt-2 text-sm/snug text-gray-700">{doc.intro}</p>
+      <p data-modal-enter style="--enter-delay: 140ms" class="mt-2 text-xs text-gray-500">Última actualización: {doc.updated}</p>
+
+      <!-- Secciones -->
+      <div data-modal-enter style="--enter-delay: 180ms" class="mt-5 space-y-4">
+        {
+          doc.sections.map((sec) => (
+            <section>
+              <h4 class="border-b border-gray-300 pb-2 font-display text-base font-bold text-gray-900">{sec.heading}</h4>
+              {sec.paragraphs?.map((p) => (
+                <p class="mt-2 text-sm/snug text-gray-700">{p}</p>
+              ))}
+              {sec.items && (
+                <ul class="mt-1 divide-y divide-gray-200">
+                  {sec.items.map((item) => (
+                    <li class="flex items-start gap-3 py-1.5 pl-1 text-sm/tight text-gray-800">
+                      <span class="mt-[0.3rem] h-2 w-2 shrink-0 rounded-full bg-[#1FA3F2]" aria-hidden="true" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          ))
+        }
+      </div>
+
+      <button
+        type="button"
+        data-close-modal
+        data-modal-enter
+        style="--enter-delay: 240ms"
+        class="mt-7 inline-flex items-center gap-2 rounded-lg bg-[#0B66B1] px-5 py-2.5 font-display text-sm font-medium text-white transition-colors hover:bg-[#095593] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#007BC5]/50 sm:text-base"
+      >
+        Entendido
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  /* Se puede desplazar, pero sin mostrar la barra de scroll */
+  .legal-scroll {
+    scrollbar-width: none;
+  }
+  .legal-scroll::-webkit-scrollbar {
+    display: none;
+  }
+</style>
+
+<script>
+  // Abrir/cerrar animado, Esc, clic fuera: lógica compartida de los modales
+  import '../scripts/modal';
+</script>
