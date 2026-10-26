@@ -1,0 +1,179 @@
+---
+// Primera sección (hero) de la página principal.
+
+// Cifras bajo los botones (cada etiqueta va en dos líneas)
+const stats = [
+  { value: 25, suffix: '+', label: ['Proyectos', 'desarrollados'] },
+  { value: 15, suffix: '+', label: ['Soluciones', 'implementadas'] },
+  { value: 8, suffix: '+', label: ['Sectores', 'atendidos'] },
+];
+---
+
+<section id="inicio" class="hero relative flex w-full flex-col items-center justify-center overflow-hidden">
+  <!-- Capas oscuras sobre la foto -->
+  <div class="hero-overlay pointer-events-none absolute inset-0" aria-hidden="true"></div>
+
+  <!-- Decoración: red en la esquina superior izquierda (encima de las capas oscuras) -->
+  <img
+    src="/icons/icon-red.svg"
+    alt=""
+    aria-hidden="true"
+    class="enter-fade pointer-events-none absolute left-0 top-0 w-40 select-none opacity-[0.69] sm:w-56 lg:w-72 xl:w-[360px]"
+    width="360"
+    height="399"
+  />
+
+  <!-- Contenedor del contenido: ancho máximo y márgenes laterales por breakpoint -->
+  <div
+    class="relative mx-auto flex w-full max-w-7xl flex-col items-start px-4 pb-12 pt-40 text-left sm:px-6 sm:pb-16 sm:pt-48 lg:px-8 lg:pb-20 lg:pt-60"
+  >
+    <!-- Titular con gradiente -->
+    <h1
+      style="--enter-delay: 150ms"
+      class="enter-up font-display text-2xl/[1.15] font-bold tracking-tight sm:whitespace-nowrap sm:text-3xl/[1.15] md:text-4xl/[1.15] lg:text-[2.75rem]/[1.15]"
+    >
+      <!-- Salto forzado + nowrap desde sm: siempre exactamente 2 líneas -->
+      Transformamos procesos en<br class="hidden sm:block" />
+      <span class="text-gradient">soluciones digitales</span> inteligentes.
+    </h1>
+
+    <!-- Subtexto -->
+    <p class="enter-up mt-5 max-w-xl text-base text-gray-300 sm:text-lg" style="--enter-delay: 250ms">
+      En <span class="font-bold text-trigra-text">TRIGRA</span> llevamos tus ideas y procesos
+      al siguiente nivel mediante soluciones digitales diseñadas para hacer tu trabajo más
+      simple, eficiente y escalable.
+    </p>
+
+    <!-- Botones de acción -->
+    <div style="--enter-delay: 350ms" class="enter-up mt-8 flex w-full flex-col gap-4 sm:w-auto sm:gap-6 sm:flex-row sm:items-center">
+      <!-- Secundario: mismo estilo que la pill "Página en construcción" -->
+      <a
+        href="#soluciones"
+        class="inline-flex items-center justify-center rounded-lg border border-[#A2AFBB] bg-white/15 px-7 py-3 font-display text-base font-medium text-trigra-text backdrop-blur-md transition-colors hover:bg-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 lg:text-lg"
+      >
+        Descubre nuestras soluciones
+      </a>
+
+      <!-- Principal: mismo estilo que "Trabajemos juntos" del navbar -->
+      <a
+        href="#contacto"
+        data-prefill="Hola, tengo una idea y me gustaría conversarla con ustedes."
+        class="inline-flex items-center justify-center rounded-lg border border-transparent bg-[#007BC5] px-7 py-3 font-display text-base font-medium text-white transition-colors hover:bg-[#0069A8] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 lg:text-lg"
+      >
+        Cuéntanos tu idea
+      </a>
+    </div>
+
+    <!-- Cifras: los números suben con un contador animado -->
+    <dl style="--enter-delay: 450ms" class="enter-up mt-12 flex flex-wrap gap-x-10 gap-y-6 sm:mt-14 lg:gap-x-14">
+      {
+        stats.map((stat) => (
+          <div class="flex items-center gap-3">
+            <dt class="sr-only">{stat.label.join(' ')}</dt>
+            <dd class="grid font-display text-3xl font-bold tabular-nums leading-none text-trigra-text lg:text-4xl">
+              {/* Copia invisible: reserva el ancho final y evita saltos */}
+              <span class="invisible col-start-1 row-start-1" aria-hidden="true">{stat.value}{stat.suffix}</span>
+              <span class="col-start-1 row-start-1" data-count={stat.value} data-suffix={stat.suffix}>{stat.value}{stat.suffix}</span>
+            </dd>
+            <dd class="text-sm leading-snug text-gray-200 lg:text-base lg:leading-snug" aria-hidden="true">
+              {stat.label[0]}<br />{stat.label[1]}
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
+
+<style>
+  /* Orden de capas (de abajo hacia arriba):
+     foto (.hero) → capas oscuras (.hero-overlay) → red icon-red.svg → contenido */
+  .hero {
+    /* svh evita el salto por la barra de direcciones en móviles; vh como respaldo */
+    min-height: 100vh;
+    min-height: 100svh;
+
+    background-color: #060a0f;
+    background-image: url('/images/background-trigra-principal.webp');
+    background-repeat: no-repeat;
+    background-size: cover;
+    /* En pantallas angostas el recorte de 'cover' es fuerte: se desplaza un poco
+       a la derecha para mantener a las dos personas principales en cuadro. */
+    background-position: 62% center;
+  }
+
+  /* Capas oscuras (de arriba hacia abajo):
+     1. Lineal vertical: transparente arriba → oscuro abajo
+     2. Sólido #030B13 al 20%
+     3. Radial: #030B13 0% → #030B13 87% → Grey-4 #060A0F 100% (opacidades),
+        con el centro desplazado hacia arriba para aclarar la parte superior */
+  .hero-overlay {
+    background-image:
+      linear-gradient(
+        to bottom,
+        rgb(6 10 15 / 0) 0%,
+        rgb(6 10 15 / 0) 40%,
+        rgb(6 10 15 / 0.75) 85%,
+        #060a0f 100%
+      ),
+      linear-gradient(rgb(3 11 19 / 0.2), rgb(3 11 19 / 0.2)),
+      radial-gradient(
+        ellipse at 50% 10%,
+        rgb(3 11 19 / 0.3) 0%,
+        rgb(3 11 19 / 0.3) 25%,
+        rgb(3 11 19 / 0.87) 85%,
+        #060a0f 100%
+      );
+  }
+
+  @media (min-width: 768px) {
+    .hero {
+      background-position: center;
+    }
+  }
+
+  /* Pantallas bajas en horizontal (móvil girado): no forzar alto completo
+     para que el contenido no quede apretado ni cortado. */
+  @media (max-height: 500px) and (orientation: landscape) {
+    .hero {
+      min-height: auto;
+    }
+  }
+</style>
+
+<script>
+  // Contador: cada cifra sube desde 0 hasta su valor con desaceleración al final.
+  // Sin JS o con "reducir movimiento" se muestran completas desde el inicio.
+  const DURATION = 1800; // ms que tarda cada contador
+  const START_DELAY = 650; // ms antes de empezar (espera la animación de entrada)
+
+  const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
+  function runCounters() {
+    const items = [...document.querySelectorAll<HTMLElement>('[data-count]')];
+    if (items.length === 0) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const targets = items.map((el) => ({
+      el,
+      to: Number(el.dataset.count),
+      suffix: el.dataset.suffix ?? '',
+    }));
+    targets.forEach(({ el, suffix }) => (el.textContent = `0${suffix}`));
+
+    setTimeout(() => {
+      const start = performance.now();
+      const tick = (now: number) => {
+        const t = Math.min((now - start) / DURATION, 1);
+        const eased = easeOutCubic(t);
+        targets.forEach(({ el, to, suffix }) => {
+          el.textContent = `${Math.round(eased * to)}${suffix}`;
+        });
+        if (t < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }, START_DELAY);
+  }
+
+  document.addEventListener('astro:page-load', runCounters);
+</script>
