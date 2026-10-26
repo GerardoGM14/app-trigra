@@ -1,8 +1,26 @@
 ---
 import BaseLayout from '@layouts/BaseLayout.astro';
-import ComingSoon from '@components/ComingSoon.astro';
+import Hero from '@components/Hero.astro';
+import Proyectos from '@components/Proyectos.astro';
+import Soluciones from '@components/Soluciones.astro';
+import Nosotros from '@components/Nosotros.astro';
+import Contacto from '@components/Contacto.astro';
+import Footer from '@components/Footer.astro';
+import Navbar from '@components/Navbar.astro';
+import SocialFab from '@components/SocialFab.astro';
 ---
 
-<BaseLayout>
-  <ComingSoon />
+<BaseLayout title="Trigra" description="Trigra — soluciones digitales inteligentes.">
+  <!-- El fondo del hero está en CSS: se adelanta su descarga porque es lo primero que se ve -->
+  <link slot="head" rel="preload" as="image" href="/images/background-trigra-principal.webp" type="image/webp" fetchpriority="high" />
+  <Navbar />
+  <main>
+    <Hero />
+    <Proyectos />
+    <Soluciones />
+    <Nosotros />
+    <Contacto />
+  </main>
+  <Footer />
+  <SocialFab />
 </BaseLayout>
