@@ -1,0 +1,92 @@
+---
+// Card de una solución (reutilizable): imagen, ícono, título, texto, etiquetas y flecha.
+import fs from 'node:fs';
+import path from 'node:path';
+import type { Solucion } from '@data/soluciones';
+import SolucionIcono from '@components/SolucionIcono.astro';
+
+interface Props {
+  solucion: Solucion;
+  class?: string;
+  style?: string;
+}
+
+const { solucion: s, class: className = '', style } = Astro.props;
+
+const image = `/images/soluciones/${s.slug}.webp`;
+const hasImage = fs.existsSync(path.join(process.cwd(), 'public', image));
+
+---
+
+<article
+  class:list={[
+    'solucion-card group relative flex flex-col overflow-hidden rounded-xl bg-[#F5F9FD] text-gray-900 shadow-lg shadow-black/20 transition-transform duration-300 hover:-translate-y-1',
+    className,
+  ]}
+  style={style}
+>
+  <!-- Imagen -->
+  <div class="aspect-[16/7] overflow-hidden bg-[#121A21]">
+    {
+      hasImage ? (
+        <img
+          src={image}
+          alt=""
+          class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          loading="lazy"
+          decoding="async"
+          width="800"
+          height="350"
+        />
+      ) : (
+        <div class="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#1A2633] to-[#0D141C] text-xs text-gray-500">
+          Imagen próximamente
+        </div>
+      )
+    }
+  </div>
+
+  <!-- Contenido -->
+  <div class="relative flex flex-1 flex-col px-5 pb-5 pt-5">
+    <!-- Red decorativa tenue -->
+    <img
+      src="/icons/icon-red-v2.svg"
+      alt=""
+      aria-hidden="true"
+      class="pointer-events-none absolute right-0 top-0 w-[90%] -scale-y-100 select-none opacity-[0.25] grayscale"
+      width="646"
+      height="128"
+      loading="lazy"
+    />
+
+    <!-- Ícono: gris por defecto, azul al pasar el mouse -->
+    <span
+      class="solucion-icon relative flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 bg-white text-gray-800 transition-colors duration-300 group-hover:border-[#007BC5] group-hover:bg-[#007BC5] group-hover:text-white"
+      aria-hidden="true"
+    >
+      <SolucionIcono icon={s.icon} />
+    </span>
+
+    <h3 class="relative mt-5 font-display text-lg/tight font-bold">{s.title}</h3>
+    <p class="relative mt-1.5 text-sm/snug text-gray-700">{s.description}</p>
+
+    <!-- Etiquetas + flecha -->
+    <div class="relative mt-auto flex items-end justify-between gap-3 pt-5">
+      <ul class="flex flex-wrap gap-1.5">
+        {s.tags.map((tag) => <li class="rounded bg-[#E4EAF1] px-2 py-0.5 text-xs font-medium text-gray-800">{tag}</li>)}
+      </ul>
+      <!-- Abre el modal con el detalle de la solución -->
+      <button
+        type="button"
+        data-open-modal={`solucion-modal-${s.slug}`}
+        aria-haspopup="dialog"
+        class="shrink-0 rounded-md p-1 text-[#4CC23A] transition-transform duration-300 hover:-translate-y-0.5 hover:translate-x-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#007BC5]"
+        aria-label={`Ver detalle de ${s.title}`}
+      >
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M7 17L17 7M8 7h9v9"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</article>

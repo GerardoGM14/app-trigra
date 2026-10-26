@@ -1,0 +1,112 @@
+---
+// Modal con el detalle de una solución (reutilizable).
+// Se abre con data-open-modal="solucion-modal-<slug>" (la flecha ↗ de la card).
+// Abrir/cerrar animado, Esc y clic fuera: src/scripts/modal.ts + estilos .app-modal.
+import fs from 'node:fs';
+import path from 'node:path';
+import type { Solucion } from '@data/soluciones';
+import SolucionIcono from '@components/SolucionIcono.astro';
+
+interface Props {
+  solucion: Solucion;
+}
+
+const { solucion: s } = Astro.props;
+const id = `solucion-modal-${s.slug}`;
+
+const image = `/images/soluciones/${s.slug}.webp`;
+const hasImage = fs.existsSync(path.join(process.cwd(), 'public', image));
+---
+
+<dialog
+  id={id}
+  class="app-modal solucion-modal m-auto w-[min(440px,calc(100%-2rem))] max-h-[calc(100dvh-2rem)] overflow-hidden rounded-2xl border-0 bg-[#F1F6FC] p-0 text-gray-900 shadow-2xl shadow-black/40"
+  aria-labelledby={`${id}-title`}
+>
+  <!-- Cerrar -->
+  <button
+    type="button"
+    data-close-modal
+    class="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white text-gray-800 shadow-md transition-colors hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#007BC5]"
+    aria-label="Cerrar"
+  >
+    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+      <path d="M6 6l12 12M18 6L6 18"></path>
+    </svg>
+  </button>
+
+  <div class="max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain">
+    <!-- Imagen + ícono superpuesto -->
+    <div class="relative">
+      <div class="h-36 overflow-hidden bg-[#121A21] sm:h-40">
+        {
+          hasImage && (
+            <img
+              src={image}
+              alt=""
+              class="modal-img h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
+              width="800"
+              height="350"
+            />
+          )
+        }
+      </div>
+      <span
+        class="absolute -bottom-6 left-6 flex h-12 w-12 items-center justify-center rounded-full bg-[#0B66B1] text-white sm:left-8"
+        aria-hidden="true"
+      >
+        <SolucionIcono icon={s.icon} class="h-5 w-5" />
+      </span>
+    </div>
+
+    <div class="px-6 pb-7 pt-10 sm:px-8 sm:pb-8">
+      <!-- Título: nombre en azul + frase -->
+      <h3
+        id={`${id}-title`}
+        data-modal-enter
+        style="--enter-delay: 60ms"
+        class="font-display text-xl/tight font-bold sm:text-[1.4rem]/tight"
+      >
+        <span class="text-[#0B66B1]">{s.title}:</span>
+        {s.headline}
+      </h3>
+      <p data-modal-enter style="--enter-delay: 120ms" class="mt-2 text-sm/snug text-gray-700">
+        {s.description}
+      </p>
+
+      <!-- Servicios incluidos -->
+      <ul data-modal-enter style="--enter-delay: 180ms" class="mt-5 divide-y divide-gray-300 border-b border-gray-300">
+        {
+          s.features.map((f) => (
+            <li class="flex items-center gap-4 py-2.5 pl-3 text-sm text-gray-800 sm:text-[0.95rem]">
+              <span class="h-2 w-2 shrink-0 rounded-full bg-[#1FA3F2]" aria-hidden="true" />
+              {f}
+            </li>
+          ))
+        }
+      </ul>
+
+      <!-- Cierra el modal y lleva a la sección de contacto -->
+      <a
+        href={s.href}
+        data-close-modal
+        data-prefill={`Hola, me interesa el servicio de ${s.title}.`}
+        data-modal-enter
+        style="--enter-delay: 240ms"
+        class="mt-7 inline-flex items-center gap-2 rounded-lg bg-[#0B66B1] px-5 py-2.5 font-display text-sm font-medium text-white transition-colors hover:bg-[#095593] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#007BC5]/50 sm:text-base"
+      >
+        Solicitar este servicio
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M7 17L17 7M8 7h9v9"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  // Abrir/cerrar animado, Esc, clic fuera y precarga: lógica compartida de los modales
+  import '../scripts/modal';
+</script>

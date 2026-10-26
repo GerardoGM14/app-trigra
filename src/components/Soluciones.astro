@@ -1,0 +1,55 @@
+---
+// Tercera sección: Soluciones.
+import { soluciones } from '@data/soluciones';
+import SolucionCard from '@components/SolucionCard.astro';
+import SolucionModal from '@components/SolucionModal.astro';
+import Tecnologias from '@components/Tecnologias.astro';
+import Proceso from '@components/Proceso.astro';
+---
+
+<section id="soluciones" class="relative w-full bg-[#0D141C]">
+  <div class="mx-auto w-full max-w-7xl px-4 py-24 sm:px-6 sm:py-28 lg:px-8 lg:py-32">
+    <!-- Encabezado: título a la izquierda, texto a la derecha -->
+    <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+      <div>
+        <p data-reveal class="flex items-center gap-3 font-display text-xs uppercase tracking-[0.2em] text-gray-400 sm:text-sm">
+          <span class="h-1 w-5 rounded-full bg-[#93FE69]" aria-hidden="true"></span>
+          [02] Soluciones / Cómo podemos ayudarte
+        </p>
+        <h2 data-reveal style="--enter-delay: 100ms" class="mt-4 font-display text-3xl/[1.15] font-bold tracking-tight sm:text-4xl/[1.15]">
+          <span class="text-gradient-reverse">Soluciones</span> pensadas<br class="hidden sm:block" />
+          para cada desafío.
+        </h2>
+      </div>
+      <p data-reveal style="--enter-delay: 150ms" class="max-w-md text-sm text-gray-400 sm:text-base lg:mb-1">
+        Cada organización es diferente. Por eso desarrollamos soluciones alineadas a tus necesidades y a la forma en que
+        trabajas.
+      </p>
+    </div>
+
+    <!-- Cards -->
+    <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:mt-14 lg:grid-cols-4">
+      {
+        soluciones.map((s, i) => (
+          // La animación de entrada va en el contenedor; la card conserva su efecto al pasar el mouse
+          <div data-reveal style={`--enter-delay: ${150 + (i % 4) * 80}ms`}>
+            <SolucionCard solucion={s} class="h-full" />
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- Tecnologías: cinta de logos en bucle -->
+    <div class="mt-16 lg:mt-20">
+      <Tecnologias />
+    </div>
+
+    <!-- Proceso: 4 pasos que se recorren con el scroll -->
+    <div class="mt-16 lg:mt-20">
+      <Proceso />
+    </div>
+  </div>
+
+  <!-- Modales con el detalle de cada solución (se abren con la flecha de la card) -->
+  {soluciones.map((s) => <SolucionModal solucion={s} />)}
+</section>

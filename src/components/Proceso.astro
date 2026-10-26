@@ -1,0 +1,279 @@
+---
+// Bloque "Proceso": 4 pasos en cards horizontales que empiezan alineadas desde la 01.
+// Se mueven arrastrando con el mouse (manito) o deslizando con el dedo: al soltar
+// siguen con inercia y se acomodan en la card más cercana.
+import fs from 'node:fs';
+import path from 'node:path';
+import { pasos, type PasoIcon } from '@data/proceso';
+import { inlineSvg } from '@utils/inlineSvg';
+
+const items = pasos.map((p, i) => {
+  const image = `/images/proceso/${p.slug}.webp`;
+  return {
+    ...p,
+    number: String(i + 1).padStart(2, '0'),
+    image,
+    hasImage: fs.existsSync(path.join(process.cwd(), 'public', image)),
+    // Ícono de Figma: public/icons/icon-paso-<slug>.svg (si no existe, se usa el de respaldo)
+    figmaIcon: inlineSvg(`/icons/icon-paso-${p.slug}.svg`, 'h-[18px] w-[18px]'),
+  };
+});
+
+// Íconos de respaldo (24×24, trazo) si falta el SVG de Figma
+const icons: Record<PasoIcon, string> = {
+  necesidades:
+    '<circle cx="10.5" cy="10.5" r="6.5"/><path d="M4 10.5h13M10.5 4c-2 2-2.8 4.2-2.8 6.5s.8 4.5 2.8 6.5M10.5 4c2 2 2.8 4.2 2.8 6.5M15.5 15.5 20 20"/>',
+  estrategia: '<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>',
+  desarrollo: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="m10 10-2 2 2 2M14 10l2 2-2 2"/>',
+  implementacion:
+    '<path d="M5 15c-1.5 1.5-2 5-2 5s3.5-.5 5-2M14.5 4.5C17 2 21 3 21 3s1 4-1.5 6.5L13 16l-5-5z"/><path d="M8 11l-3 .5L3 14l4 1M13 16l-.5 3L10 21l-1-4"/>',
+};
+---
+
+<div id="proceso" data-process class="relative">
+  <div class="relative overflow-hidden rounded-2xl bg-[#F5FBFF] text-gray-900">
+    <!-- Red decorativa (esquina superior derecha) -->
+    <img
+      src="/icons/icon-red.svg"
+      alt=""
+      aria-hidden="true"
+      class="pointer-events-none absolute right-0 top-0 w-40 -scale-x-100 select-none opacity-[0.69] sm:w-56"
+      width="360"
+      height="399"
+      loading="lazy"
+    />
+
+    <!-- Encabezado -->
+    <div class="relative flex flex-col gap-5 px-6 pt-8 sm:px-10 sm:pt-10 lg:flex-row lg:items-end lg:justify-between">
+      <div>
+        <p data-reveal class="flex items-center gap-3 font-display text-xs uppercase tracking-[0.2em] text-gray-600 sm:text-sm">
+          <span class="h-1 w-5 rounded-full bg-[#0B66B1]" aria-hidden="true"></span>
+          [04] Proceso / Cómo trabajamos
+        </p>
+        <h3 data-reveal style="--enter-delay: 100ms" class="mt-3 max-w-md font-display text-2xl/tight font-bold tracking-tight text-[#0B66B1] sm:text-[2rem]/tight">
+          Un proceso claro para construir mejores soluciones.
+        </h3>
+      </div>
+      <p data-reveal style="--enter-delay: 150ms" class="max-w-sm text-sm text-gray-600 lg:mb-1 lg:mr-24">
+        Cada proyecto es único, pero nuestra forma de trabajar mantiene un proceso claro que nos permite comprender tus
+        necesidades, desarrollar la mejor solución y acompañarte hasta su implementación.
+      </p>
+    </div>
+
+    <!-- Cards: ventana horizontal -->
+    <div
+      data-process-viewport
+      data-reveal
+      style="--enter-delay: 200ms"
+      class="process-viewport mt-8 overflow-x-auto scroll-px-6 px-6 pb-2 sm:scroll-px-10 focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#007BC5]/50 sm:px-10"
+      role="region"
+      aria-label="Pasos del proceso (arrastra o usa las flechas para recorrerlos)"
+    >
+      <ol data-process-track class="flex w-max gap-4 pr-6 sm:gap-5 sm:pr-10">
+        {
+          items.map((p) => (
+            <li class="process-card flex w-[85vw] max-w-[440px] shrink-0 flex-col rounded-xl bg-[#EAF0F6] p-5 sm:w-[440px]">
+              <div class="flex items-start justify-between">
+                <span class="flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 bg-white text-gray-800" aria-hidden="true">
+                  {p.figmaIcon ? (
+                    <Fragment set:html={p.figmaIcon} />
+                  ) : (
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" set:html={icons[p.icon]} />
+                  )}
+                </span>
+                <span class="font-display text-5xl/none font-bold text-[#D3DBE4]" aria-hidden="true">{p.number}</span>
+              </div>
+              <h4 class="mt-3 font-display text-lg/tight font-bold">
+                <span class="sr-only">Paso {p.number}: </span>{p.title}
+              </h4>
+              <!-- Siempre 3 filas: reserva el alto aunque el texto sea más corto -->
+              <p class="mb-4 mt-1.5 line-clamp-3 min-h-[4.125em] text-sm/snug text-gray-700">{p.description}</p>
+              <div class="mt-auto aspect-[5/2] overflow-hidden rounded-lg bg-[#DCE4EC]">
+                {p.hasImage ? (
+                  <img src={p.image} alt="" class="h-full w-full object-cover" loading="lazy" decoding="async" draggable="false" width="680" height="340" />
+                ) : (
+                  <div class="flex h-full w-full items-center justify-center text-xs text-gray-500">Imagen próximamente</div>
+                )}
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+
+    <!-- Barra de progreso del recorrido -->
+    <div class="px-6 pb-8 pt-5 sm:px-10 sm:pb-10" aria-hidden="true">
+      <div class="h-1 w-full overflow-hidden rounded-full bg-[#DCE4EC]">
+        <div data-process-progress class="h-full w-full origin-left scale-x-0 rounded-full bg-[#0B66B1]"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Ventana horizontal: snap por card y barra de scroll oculta */
+  .process-viewport {
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    cursor: grab;
+    touch-action: pan-x pan-y;
+  }
+  .process-viewport::-webkit-scrollbar {
+    display: none;
+  }
+  /* Mientras se arrastra o se desliza con inercia, el snap se desactiva */
+  .process-viewport.is-dragging,
+  .process-viewport.is-gliding {
+    scroll-snap-type: none;
+  }
+  .process-viewport.is-dragging {
+    cursor: grabbing;
+    user-select: none;
+  }
+  .process-card {
+    scroll-snap-align: start;
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+  /* Al arrastrar, las cards se "levantan" levemente, como al tomar una tarjeta real */
+  .process-viewport.is-dragging .process-card {
+    transform: scale(0.985) translateY(-2px);
+    box-shadow: 0 12px 24px -12px rgb(11 102 177 / 0.25);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .process-card {
+      transition: none;
+    }
+    .process-viewport.is-dragging .process-card {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  function initProceso() {
+    const viewport = document.querySelector<HTMLElement>('[data-process-viewport]');
+    const progress = document.querySelector<HTMLElement>('[data-process-progress]');
+    if (!viewport) return;
+
+    const reduceMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const cards = [...viewport.querySelectorAll<HTMLElement>('.process-card')];
+    const maxScroll = () => viewport.scrollWidth - viewport.clientWidth;
+
+    // Barra de progreso: sigue la posición horizontal
+    const updateProgress = () => {
+      const max = maxScroll();
+      if (progress) progress.style.transform = `scaleX(${max > 0 ? viewport.scrollLeft / max : 1})`;
+    };
+
+    // Posición de scroll que deja una card alineada al inicio
+    const padLeft = () => parseFloat(getComputedStyle(viewport).paddingLeft) || 0;
+    const snapPoints = () => cards.map((c) => Math.min(c.offsetLeft - padLeft(), maxScroll()));
+    const nearest = (x: number) =>
+      snapPoints().reduce((best, p) => (Math.abs(p - x) < Math.abs(best - x) ? p : best), 0);
+
+    // Inercia: desliza con la velocidad del gesto, frena y se acomoda en la card más cercana
+    let glide = 0;
+    const settle = (velocity: number) => {
+      cancelAnimationFrame(glide);
+      // Distancia que recorrería con esa velocidad hasta frenar (px/ms → px)
+      const target = nearest(Math.min(Math.max(viewport.scrollLeft - velocity * 300, 0), maxScroll()));
+      if (reduceMotion()) {
+        viewport.scrollLeft = target;
+        return;
+      }
+      const start = viewport.scrollLeft;
+      const delta = target - start;
+      const duration = Math.min(Math.max(Math.abs(delta) * 1.1, 280), 700);
+      const t0 = performance.now();
+      viewport.classList.add('is-gliding');
+      const step = (now: number) => {
+        const t = Math.min((now - t0) / duration, 1);
+        const eased = 1 - Math.pow(1 - t, 3); // frena al final
+        viewport.scrollLeft = start + delta * eased;
+        if (t < 1) glide = requestAnimationFrame(step);
+        else viewport.classList.remove('is-gliding');
+      };
+      glide = requestAnimationFrame(step);
+    };
+
+    // Arrastre con el mouse (en táctil, el deslizamiento nativo ya tiene inercia y snap)
+    let dragX: number | null = null;
+    let startLeft = 0;
+    let moved = false;
+    let lastX = 0;
+    let lastT = 0;
+    let velocity = 0;
+
+    viewport.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      cancelAnimationFrame(glide);
+      viewport.classList.remove('is-gliding');
+      dragX = lastX = e.clientX;
+      lastT = performance.now();
+      startLeft = viewport.scrollLeft;
+      velocity = 0;
+      moved = false;
+      viewport.classList.add('is-dragging');
+      viewport.setPointerCapture(e.pointerId);
+    });
+
+    viewport.addEventListener('pointermove', (e) => {
+      if (dragX === null) return;
+      const dx = e.clientX - dragX;
+      if (Math.abs(dx) > 3) moved = true;
+      viewport.scrollLeft = startLeft - dx;
+      // Velocidad del gesto (suavizada) para la inercia al soltar
+      const now = performance.now();
+      const dt = now - lastT;
+      if (dt > 0) velocity = 0.8 * ((e.clientX - lastX) / dt) + 0.2 * velocity;
+      lastX = e.clientX;
+      lastT = now;
+    });
+
+    const endDrag = () => {
+      if (dragX === null) return;
+      dragX = null;
+      viewport.classList.remove('is-dragging');
+      // Si se soltó después de quedarse quieto, sin impulso
+      if (performance.now() - lastT > 80) velocity = 0;
+      settle(velocity);
+    };
+    viewport.addEventListener('pointerup', endDrag);
+    viewport.addEventListener('pointercancel', endDrag);
+
+    // Soltar después de arrastrar no cuenta como clic
+    viewport.addEventListener(
+      'click',
+      (e) => {
+        if (moved) {
+          e.preventDefault();
+          e.stopPropagation();
+          moved = false;
+        }
+      },
+      true
+    );
+
+    // Teclado: flechas para pasar de card cuando la fila tiene el foco
+    viewport.tabIndex = 0;
+    viewport.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+      e.preventDefault();
+      const points = snapPoints();
+      const i = points.indexOf(nearest(viewport.scrollLeft));
+      const next = points[Math.min(Math.max(i + (e.key === 'ArrowRight' ? 1 : -1), 0), points.length - 1)];
+      viewport.scrollTo({ left: next, behavior: reduceMotion() ? 'auto' : 'smooth' });
+    });
+
+    // Empieza alineada desde la primera card
+    viewport.scrollLeft = 0;
+    viewport.addEventListener('scroll', updateProgress, { passive: true });
+    window.addEventListener('resize', updateProgress);
+    updateProgress();
+  }
+
+  document.addEventListener('astro:page-load', initProceso);
+</script>
