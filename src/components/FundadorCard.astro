@@ -1,0 +1,100 @@
+---
+// Card del fundador (reutilizable para otros miembros del equipo).
+// Foto en public/images/equipo/<slug>.webp (si no existe, se muestran las iniciales).
+import fs from 'node:fs';
+import path from 'node:path';
+
+interface Props {
+  slug: string;
+  name: string;
+  role: string;
+  /** Grado o título profesional (ej. "Bachiller en …") */
+  degree?: string;
+  bio?: string;
+  linkedin?: string;
+}
+
+const { slug, name, role, degree, bio, linkedin } = Astro.props;
+
+const photo = `/images/equipo/${slug}.webp`;
+const hasPhoto = fs.existsSync(path.join(process.cwd(), 'public', photo));
+const initials = name
+  .split(' ')
+  .filter(Boolean)
+  .slice(0, 2)
+  .map((w) => w[0])
+  .join('')
+  .toUpperCase();
+
+// Logo de LinkedIn propio de esta card: public/icons/icon-linkedin-card.svg (o .png/.webp).
+// Si no existe, se usa el glifo blanco de las redes sobre un botón azul.
+const customLinkedinExt = ['svg', 'webp', 'png'].find((e) =>
+  fs.existsSync(path.join(process.cwd(), 'public', 'icons', `icon-linkedin-card.${e}`))
+);
+const linkedinIcon = customLinkedinExt ? `/icons/icon-linkedin-card.${customLinkedinExt}` : '/icons/icon-linkedin.svg';
+---
+
+<article class="relative flex items-center gap-4 overflow-hidden rounded-xl bg-[#EAF0F6] p-4 sm:gap-6 sm:px-7 sm:py-5">
+  <!-- Red decorativa (esquina inferior derecha) -->
+  <img
+    src="/icons/icon-red.svg"
+    alt=""
+    aria-hidden="true"
+    class="pointer-events-none absolute bottom-0 right-0 w-36 rotate-180 select-none opacity-[0.69] sm:w-48"
+    width="360"
+    height="399"
+    loading="lazy"
+  />
+
+  <!-- Foto con borde en el degradado de la marca -->
+  <div class="relative shrink-0 rounded-full bg-gradient-to-br from-[#93FE69] to-[#6ECFFF] p-[3px]">
+    {
+      hasPhoto ? (
+        <img
+          src={photo}
+          alt={name}
+          class="h-16 w-16 rounded-full border-2 border-white object-cover sm:h-[4.5rem] sm:w-[4.5rem]"
+          width="144"
+          height="144"
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <span
+          class="flex h-16 w-16 items-center justify-center rounded-full border-2 border-white bg-[#0A4E8C] font-display text-lg font-bold text-white sm:h-[4.5rem] sm:w-[4.5rem]"
+          aria-hidden="true"
+        >
+          {initials}
+        </span>
+      )
+    }
+  </div>
+
+  <div class="relative min-w-0 flex-1">
+    <p class="font-display text-[0.7rem] font-bold uppercase tracking-[0.15em] text-[#0B66B1]">{role}</p>
+    <!-- Nombre y grado en la misma línea (el grado baja si no hay espacio) -->
+    <h3 class="mt-0.5 flex flex-wrap items-baseline gap-x-2 font-display text-base font-bold leading-tight text-gray-900 sm:text-lg">
+      {name}
+      {degree && <span class="font-normal text-gray-600"><span aria-hidden="true">· </span>{degree}</span>}
+    </h3>
+    {bio && <p class="mt-1 text-xs/snug text-gray-600 sm:text-sm/snug">{bio}</p>}
+  </div>
+
+  {
+    linkedin && (
+      <a
+        href={linkedin}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`LinkedIn de ${name}`}
+        class:list={[
+          'relative z-10 flex shrink-0 items-center justify-center rounded-lg transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#007BC5]/50',
+          // Logo propio: se muestra tal cual con su proporción; glifo blanco: va sobre un botón azul
+          customLinkedinExt ? 'px-1 py-1 hover:scale-105' : 'h-12 w-12 bg-[#0A66C2] hover:bg-[#0956A3]',
+        ]}
+      >
+        <img src={linkedinIcon} alt="" aria-hidden="true" class={customLinkedinExt ? 'h-7 w-auto sm:h-8' : 'h-6 w-6'} width={customLinkedinExt ? 160 : 24} height={customLinkedinExt ? 40 : 24} />
+      </a>
+    )
+  }
+</article>

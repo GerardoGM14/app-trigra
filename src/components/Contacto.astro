@@ -1,0 +1,230 @@
+---
+// Quinta sección: Contacto (formulario + datos de contacto).
+// El formulario no necesita servidor: al enviarlo arma el mensaje y abre WhatsApp
+// con los datos ya escritos (el sitio es estático, sin backend).
+import { networks } from '@data/social';
+
+const EMAIL = 'info@trigra.com';
+const WHATSAPP_DISPLAY = '+51 934 367 672';
+
+const contactos = [
+  {
+    label: 'Email',
+    value: EMAIL,
+    href: `mailto:${EMAIL}`,
+    icon: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3.5 6.5 8.5 6 8.5-6"/>',
+    external: false,
+  },
+  {
+    label: 'WhatsApp',
+    value: WHATSAPP_DISPLAY,
+    href: networks.whatsapp.href,
+    icon: '<path d="M4 20l1.3-3.9A8 8 0 1 1 8 18.9z"/><path d="M9.2 8.6c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.6 1.5c.1.2 0 .5-.1.6l-.5.6c.6 1.1 1.5 2 2.6 2.6l.6-.5c.2-.1.4-.2.6-.1l1.5.6c.3.1.4.3.4.5v.5c0 .3 0 .5-.4.7-.6.3-1.5.5-2.6.1a8 8 0 0 1-4.6-4.6c-.4-1.1-.2-2 .1-2.6z"/>',
+    external: true,
+  },
+];
+
+// Campos del formulario
+const inputClass =
+  'mt-1.5 block w-full rounded-md border-0 bg-[#262F37] px-3.5 py-2.5 text-sm text-white placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-[#007BC5]/60 sm:text-base';
+---
+
+<section id="contacto" class="relative w-full overflow-hidden bg-[#0D141C]">
+  <!-- Marca de TRIGRA de fondo, muy tenue -->
+  <img
+    src="/images/trigra-marca.webp"
+    alt=""
+    aria-hidden="true"
+    class="pointer-events-none absolute left-1/2 top-1/2 w-[28rem] max-w-[80vw] -translate-x-[70%] -translate-y-[40%] select-none opacity-[0.05]"
+    width="440"
+    height="383"
+    loading="lazy"
+  />
+
+  <div class="relative mx-auto grid w-full max-w-7xl items-start gap-12 px-4 py-24 sm:px-6 sm:py-28 lg:grid-cols-2 lg:gap-16 lg:px-8 lg:py-32">
+    <!-- Columna izquierda -->
+    <div>
+      <p data-reveal class="flex items-center gap-3 font-display text-xs uppercase tracking-[0.2em] text-gray-400 sm:text-sm">
+        <span class="h-1 w-5 rounded-full bg-[#93FE69]" aria-hidden="true"></span>
+        [06] Contacto / Hablemos
+      </p>
+      <h2 data-reveal style="--enter-delay: 100ms" class="mt-4 font-display text-3xl/[1.15] font-bold tracking-tight sm:text-4xl/[1.15]">
+        Conversemos sobre <span class="text-gradient-reverse">tu<br class="hidden sm:block" /> próximo proyecto.</span>
+      </h2>
+      <p data-reveal style="--enter-delay: 150ms" class="mt-4 max-w-md text-sm text-gray-300 sm:text-base">
+        Si tienes una idea, un proceso que deseas optimizar o un proyecto por desarrollar, estaremos encantados de
+        ayudarte.
+      </p>
+
+      <ul data-reveal style="--enter-delay: 200ms" class="mt-10 space-y-5">
+        {
+          contactos.map((c) => (
+            <li>
+              <a
+                href={c.href}
+                target={c.external ? '_blank' : undefined}
+                rel={c.external ? 'noopener noreferrer' : undefined}
+                class="group inline-flex items-center gap-4 rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+              >
+                <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#0A3A66] text-white transition-colors group-hover:bg-[#007BC5]" aria-hidden="true">
+                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" set:html={c.icon} />
+                </span>
+                <span>
+                  <span class="block font-display text-xs uppercase tracking-[0.15em] text-gray-400">{c.label}</span>
+                  <span class="block text-sm text-white group-hover:underline sm:text-base">{c.value}</span>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <!-- Columna derecha: formulario -->
+    <div data-reveal style="--enter-delay: 150ms" class="rounded-xl bg-[#161F2A] p-6 sm:p-8">
+      <h3 class="font-display text-xl font-bold text-white sm:text-2xl">Cuéntanos sobre tu proyecto.</h3>
+      <p class="mt-1.5 text-sm text-gray-400">
+        Déjanos tus datos y una breve descripción. Nos pondremos en contacto contigo para conocer tus necesidades.
+      </p>
+
+      <form id="contacto-form" class="mt-6 space-y-4" novalidate>
+        <div>
+          <label for="cf-nombre" class="text-sm text-gray-200">Nombre completo <span class="text-red-400" aria-hidden="true">*</span></label>
+          <input id="cf-nombre" name="nombre" type="text" required autocomplete="name" placeholder="Tu nombre y apellido" class={inputClass} />
+        </div>
+        <div>
+          <label for="cf-email" class="text-sm text-gray-200">Email <span class="text-red-400" aria-hidden="true">*</span></label>
+          <input id="cf-email" name="email" type="email" required autocomplete="email" placeholder="tu@correo.com" class={inputClass} />
+        </div>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="cf-telefono" class="text-sm text-gray-200">Teléfono <span class="text-red-400" aria-hidden="true">*</span></label>
+            <input id="cf-telefono" name="telefono" type="tel" required autocomplete="tel" placeholder="+51 999 999 999" pattern="[+0-9 ()-]{6,}" class={inputClass} />
+          </div>
+          <div>
+            <label for="cf-empresa" class="text-sm text-gray-200">Empresa (Opcional)</label>
+            <input id="cf-empresa" name="empresa" type="text" autocomplete="organization" placeholder="Nombre de tu empresa" class={inputClass} />
+          </div>
+        </div>
+        <div>
+          <label for="cf-mensaje" class="text-sm text-gray-200">Mensaje <span class="text-red-400" aria-hidden="true">*</span></label>
+          <textarea id="cf-mensaje" name="mensaje" required rows="4" placeholder="Cuéntanos brevemente qué necesitas…" class={`${inputClass} resize-y`}></textarea>
+        </div>
+
+        <!-- Mensaje de error o confirmación -->
+        <p id="contacto-status" class="min-h-[1.25rem] text-sm" role="status" aria-live="polite"></p>
+
+        <button
+          type="submit"
+          class="w-full rounded-lg bg-[#007BC5] px-6 py-3 font-display text-base font-medium text-white transition-colors hover:bg-[#0069A8] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+        >
+          Contáctanos
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Campo con error: borde rojo suave */
+  #contacto-form [aria-invalid='true'] {
+    box-shadow: 0 0 0 2px rgb(248 113 113 / 0.7);
+  }
+
+  /* Destello azul cuando el mensaje se llena automáticamente */
+  #cf-mensaje.is-prefilled {
+    animation: prefill-flash 1.6s ease;
+  }
+  @keyframes prefill-flash {
+    0%,
+    40% {
+      box-shadow: 0 0 0 2px rgb(0 123 197 / 0.9);
+    }
+    100% {
+      box-shadow: 0 0 0 2px rgb(0 123 197 / 0);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #cf-mensaje.is-prefilled {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  // Al enviar: valida los campos y abre WhatsApp con el mensaje armado.
+  const WHATSAPP_PHONE = '51934367672';
+
+  function initContacto() {
+    const form = document.getElementById('contacto-form') as HTMLFormElement | null;
+    const status = document.getElementById('contacto-status');
+    if (!form || !status) return;
+
+    const setStatus = (text: string, ok: boolean) => {
+      status.textContent = text;
+      status.className = `min-h-[1.25rem] text-sm ${ok ? 'text-[#93FE69]' : 'text-red-400'}`;
+    };
+
+    // Limpia el error del campo apenas el usuario lo corrige
+    form.addEventListener('input', (e) => {
+      const field = e.target as HTMLInputElement;
+      if (field.checkValidity()) field.removeAttribute('aria-invalid');
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const fields = [...form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input, textarea')];
+      const invalid = fields.filter((f) => !f.checkValidity());
+      fields.forEach((f) => (f.checkValidity() ? f.removeAttribute('aria-invalid') : f.setAttribute('aria-invalid', 'true')));
+      if (invalid.length) {
+        invalid[0].focus();
+        setStatus('Revisa los campos marcados: son obligatorios o tienen un formato inválido.', false);
+        return;
+      }
+
+      const data = new FormData(form);
+      const get = (k: string) => String(data.get(k) ?? '').trim();
+      const lines = [
+        '¡Hola Trigra! Quiero conversar sobre un proyecto.',
+        '',
+        `*Nombre:* ${get('nombre')}`,
+        `*Email:* ${get('email')}`,
+        `*Teléfono:* ${get('telefono')}`,
+        // La empresa es opcional: solo se incluye si la escribieron
+        ...(get('empresa') ? [`*Empresa:* ${get('empresa')}`] : []),
+        '',
+        `*Mensaje:* ${get('mensaje')}`,
+      ];
+      const text = lines.join('\n');
+
+      window.open(`https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
+      setStatus('¡Listo! Se abrió WhatsApp con tu mensaje: solo tienes que enviarlo.', true);
+      form.reset();
+    });
+  }
+
+  document.addEventListener('astro:page-load', initContacto);
+
+  // Mensaje automático: los botones que llevan a #contacto con data-prefill="…"
+  // escriben ese texto en el campo Mensaje. Solo reemplaza el campo si está vacío
+  // o si su contenido también fue escrito automáticamente (nunca borra lo que
+  // escribió la persona).
+  document.addEventListener('click', (e) => {
+    const trigger = (e.target as HTMLElement).closest<HTMLElement>('[data-prefill]');
+    const mensaje = document.getElementById('cf-mensaje') as HTMLTextAreaElement | null;
+    if (!trigger || !mensaje) return;
+
+    const current = mensaje.value.trim();
+    const wasAuto = mensaje.dataset.autofill === current;
+    if (current && !wasAuto) return;
+
+    const text = `${trigger.dataset.prefill ?? ''} `;
+    mensaje.value = text;
+    mensaje.dataset.autofill = text.trim();
+    mensaje.removeAttribute('aria-invalid');
+    // Destello para que se note que el mensaje ya viene escrito; se retrasa para que
+    // ocurra al llegar a la sección (después del desplazamiento o del cierre del modal)
+    mensaje.classList.remove('is-prefilled');
+    window.setTimeout(() => mensaje.classList.add('is-prefilled'), 900);
+  });
+</script>

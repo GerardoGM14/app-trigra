@@ -1,0 +1,129 @@
+---
+// Cuarta sección: Nosotros.
+import fs from 'node:fs';
+import path from 'node:path';
+import { inlineSvg } from '@utils/inlineSvg';
+import { networks } from '@data/social';
+import FundadorCard from '@components/FundadorCard.astro';
+import CtaBanner from '@components/CtaBanner.astro';
+
+// Decoración de las cards: public/icons/icon-red-card.svg si existe; si no, la red general
+const cardDecor = fs.existsSync(path.join(process.cwd(), 'public', 'icons', 'icon-red-card.svg'))
+  ? '/icons/icon-red-card.svg'
+  : '/icons/icon-red.svg';
+const customDecor = cardDecor !== '/icons/icon-red.svg';
+
+const datos = [
+  { label: 'Fundación', value: '2026' },
+  { label: 'Ubicación', value: 'Remoto / LATAM' },
+];
+
+// Ícono de Figma opcional: public/icons/icon-mision.svg / icon-vision.svg
+// (si no existen, se usan los íconos de línea de respaldo)
+const pilares = [
+  {
+    title: 'Nuestra Misión',
+    text: 'Desarrollar soluciones tecnológicas que ayuden a las organizaciones a optimizar sus procesos y alcanzar sus objetivos con mayor eficiencia.',
+    figmaIcon: inlineSvg('/icons/icon-mision.svg', 'h-6 w-6'),
+    icon: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><path d="M12 12l7-7M16 5h3v3"/>',
+  },
+  {
+    title: 'Nuestra Visión',
+    text: 'Ser un aliado estratégico en la transformación digital, creando soluciones innovadoras que impulsen el crecimiento de nuestros clientes.',
+    figmaIcon: inlineSvg('/icons/icon-vision.svg', 'h-6 w-6'),
+    icon: '<circle cx="12" cy="12" r="9"/><path d="M7 14.5l3.5-3.5 2.5 2.5L17 9.5M14 9.5h3v3"/>',
+  },
+];
+---
+
+<!-- data-fab-light: el botón flotante de redes cambia a fondo oscuro sobre esta sección -->
+<section id="nosotros" data-fab-light class="relative w-full bg-[#F5FBFF] text-gray-900">
+  <div class="mx-auto w-full max-w-7xl px-4 py-24 sm:px-6 sm:py-28 lg:px-8 lg:py-32">
+    <div class="grid items-center gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
+      <!-- Columna izquierda: quiénes somos -->
+      <div>
+        <p data-reveal class="flex items-center gap-3 font-display text-xs uppercase tracking-[0.15em] text-gray-700 sm:text-sm">
+          <span class="h-1 w-5 bg-[#0B66B1]" aria-hidden="true"></span>
+          [05] Nosotros / Quiénes somos
+        </p>
+        <h2 data-reveal style="--enter-delay: 100ms" class="mt-4 font-display text-[1.75rem]/[1.12] font-bold tracking-tight text-[#0B66B1] sm:text-[2.25rem]/[1.12]">
+          Transformación, Innovación, Gestión y Automatización. Los pilares que inspiran cada solución que desarrollamos.
+        </h2>
+        <p data-reveal style="--enter-delay: 150ms" class="mt-3 text-sm text-gray-700 sm:text-base">
+          Somos una empresa enfocada en desarrollar soluciones tecnológicas que responden a necesidades reales. En
+          TRIGRA entendemos la tecnología como una herramienta para optimizar procesos, fortalecer la gestión y
+          acompañar el crecimiento de cada organización.
+        </p>
+
+        <!-- Datos -->
+        <dl data-reveal style="--enter-delay: 200ms" class="mt-6 flex flex-wrap gap-x-10 gap-y-4 border-t border-[#D0DAE2] pt-5">
+          {
+            datos.map((d) => (
+              <div>
+                <dt class="font-display text-xs uppercase tracking-[0.15em] text-gray-600">{d.label}</dt>
+                <dd class="mt-1 font-display text-base font-bold text-gray-900 sm:text-lg">{d.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+
+      <!-- Columna derecha: misión y visión -->
+      <div class="grid gap-5 sm:grid-cols-2 lg:self-start">
+        {
+          pilares.map((p, i) => (
+            <div data-reveal style={`--enter-delay: ${200 + i * 100}ms`}>
+              <article class="relative flex h-full min-h-[19rem] flex-col overflow-hidden rounded-xl bg-[#0A4E8C] lg:min-h-[23rem] p-5 text-white sm:p-6">
+                <!-- Red decorativa -->
+                <img
+                  src={cardDecor}
+                  alt=""
+                  aria-hidden="true"
+                  class:list={[
+                    'pointer-events-none absolute right-0 top-0 select-none',
+                    customDecor ? 'w-32 sm:w-36' : 'w-36 -scale-x-100 opacity-40 grayscale',
+                  ]}
+                  loading="lazy"
+                />
+                <span class="relative flex h-12 w-12 items-center justify-center rounded-full bg-[#07345E]" aria-hidden="true">
+                  {p.figmaIcon ? (
+                    <Fragment set:html={p.figmaIcon} />
+                  ) : (
+                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" set:html={p.icon} />
+                  )}
+                </span>
+                <h3 class="relative mt-auto pt-8 font-display text-base font-bold sm:text-lg">{p.title}</h3>
+                <p class="relative mt-2 text-sm/snug text-blue-100/90">{p.text}</p>
+              </article>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- Fundador: a todo el ancho, debajo del bloque -->
+    <div data-reveal style="--enter-delay: 150ms" class="mt-10 lg:mt-12">
+      <FundadorCard
+        slug="gerardo-gonzalez"
+        name="Gerardo Fabian Gonzalez Moreno"
+        role="Fundador & CTO"
+        degree="Bachiller en Ingeniería de Sistemas e Informática"
+        bio="Lidera la visión tecnológica y el desarrollo de cada solución de TRIGRA."
+        linkedin={networks.linkedin.href}
+      />
+    </div>
+
+    <!-- Llamado a la acción (mismo banner del modal de cada proyecto, con su propio texto) -->
+    <div data-reveal style="--enter-delay: 150ms" class="mt-6 lg:mt-8">
+      <CtaBanner
+        title="¿Listo para transformar"
+        highlight="tus procesos"
+        titleEnd="?"
+        titleBreak
+        text="Conoce cómo TRIGRA puede ayudarte a convertir tus necesidades en soluciones digitales eficientes."
+        cta="Conversemos sobre tu idea"
+        prefill="Hola, quiero conocer cómo TRIGRA puede ayudarme a transformar mis procesos."
+      />
+    </div>
+  </div>
+</section>
