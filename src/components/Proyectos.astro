@@ -1,0 +1,267 @@
+---
+// Segunda sección: Proyectos.
+// El fondo es #060A0F (Grey-4), el mismo color en el que termina el degradado
+// inferior del hero, para que ambas secciones se fundan sin corte.
+import fs from 'node:fs';
+import path from 'node:path';
+import { proyectos } from '@data/proyectos';
+import ProyectoModal from '@components/ProyectoModal.astro';
+import GaleriaLightbox from '@components/GaleriaLightbox.astro';
+
+// Solo se usa la imagen si ya existe en public/; si no, se muestra un marcador
+const items = proyectos.map((p) => ({
+  ...p,
+  hasImage: fs.existsSync(path.join(process.cwd(), 'public', p.image)),
+}));
+---
+
+<section id="proyectos" class="relative w-full bg-[#060A0F]">
+  <div
+    class="mx-auto grid w-full max-w-7xl items-start gap-12 px-4 py-24 sm:px-6 sm:py-28 lg:grid-cols-2 lg:gap-16 lg:px-8 lg:py-32"
+  >
+    <!-- Columna izquierda: encabezado + lista de proyectos.
+         Se sube con top negativo (relative) para no cambiar el alto de la sección -->
+    <div class="relative -top-4 sm:-top-6 lg:-top-8">
+      <p data-reveal class="flex items-center gap-3 font-display text-xs uppercase tracking-[0.2em] text-gray-400 sm:text-sm">
+        <span class="h-1 w-5 rounded-full bg-[#93FE69]" aria-hidden="true"></span>
+        [01] Proyectos / Nuestro trabajo
+      </p>
+
+      <h2 data-reveal style="--enter-delay: 100ms" class="mt-4 font-display text-3xl/[1.15] font-bold tracking-tight sm:text-4xl/[1.15]">
+        <span class="text-gradient-reverse">Proyectos destacados</span> que<br class="hidden sm:block" />
+        nacen de necesidades reales.
+      </h2>
+
+      <!-- Lista (pestañas) -->
+      <div data-reveal style="--enter-delay: 200ms" class="relative mt-10 sm:mt-12" role="tablist" aria-label="Proyectos destacados" aria-orientation="vertical">
+        {
+          items.map((p, i) => (
+            <button
+              type="button"
+              role="tab"
+              id={`proyecto-tab-${i}`}
+              aria-controls={`proyecto-panel-${i}`}
+              aria-selected={i === 0 ? 'true' : 'false'}
+              tabindex={i === 0 ? 0 : -1}
+              data-proyecto-tab={i}
+              class="proyecto-tab group relative block w-full border-b border-white/10 px-4 py-5 text-left sm:px-5 focus:outline-none focus-visible:bg-white/5"
+            >
+              <span class="proyecto-name block font-display text-lg font-medium text-gray-300 transition-colors group-hover:text-white sm:text-xl">
+                {p.name}
+              </span>
+              <span class="mt-1 block text-sm text-gray-500">
+                {p.year}
+                <span class="mx-1.5">|</span>
+                {[p.type, ...p.stack].join(' • ')}
+              </span>
+            </button>
+          ))
+        }
+
+        <!-- Barra con degradado (efecto snake): un trazo SVG que viaja por el borde
+             derecho desde la línea del proyecto anterior hasta la del nuevo -->
+        <svg
+          id="proyecto-line"
+          class="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
+          aria-hidden="true"
+        >
+          <defs>
+            <linearGradient id="proyecto-line-grad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="100" y2="0">
+              <stop offset="0%" stop-color="#93FE69"></stop>
+              <stop offset="100%" stop-color="#6ECFFF"></stop>
+            </linearGradient>
+          </defs>
+          <path
+            fill="none"
+            stroke="url(#proyecto-line-grad)"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Columna derecha: vista previa del proyecto activo -->
+    <div data-reveal style="--enter-delay: 300ms" class="relative aspect-[4/3] w-full overflow-hidden rounded-2xl border border-white/10 bg-[#0C1218] lg:aspect-square">
+      {
+        items.map((p, i) => (
+          <div
+            role="tabpanel"
+            id={`proyecto-panel-${i}`}
+            aria-labelledby={`proyecto-tab-${i}`}
+            data-proyecto-panel={i}
+            class:list={[
+              'proyecto-panel absolute inset-0 transition-opacity duration-500',
+              i === 0 ? 'opacity-100' : 'pointer-events-none opacity-0',
+            ]}
+            hidden={i !== 0}
+          >
+            {p.hasImage ? (
+              <img
+                src={p.image}
+                alt={`Vista previa del proyecto ${p.name}`}
+                class="h-full w-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            ) : (
+              <div class="flex h-full w-full flex-col items-center justify-center gap-2 bg-gradient-to-b from-[#121A21] to-[#0A0D10] p-6 text-center">
+                <span class="font-display text-2xl font-bold text-white/80">{p.name}</span>
+                <span class="text-sm text-gray-500">Vista previa próximamente</span>
+              </div>
+            )}
+
+            <button
+              type="button"
+              data-open-modal={`proyecto-modal-${i}`}
+              aria-haspopup="dialog"
+              class="absolute bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-[#007BC5] px-6 py-2.5 font-display text-base font-medium text-white transition-colors hover:bg-[#0069A8] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+            >
+              Ver caso completo
+            </button>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+
+  <!-- Modales "Ver caso completo" (fuera de los paneles para que no queden inertes) -->
+  {
+    items.map((p, i) => (
+      <ProyectoModal id={`proyecto-modal-${i}`} proyecto={p} index={i} total={items.length} />
+    ))
+  }
+
+  <!-- Carrusel de imágenes de las galerías (uno para todos los modales) -->
+  <GaleriaLightbox />
+</section>
+
+<style>
+  /* Proyecto activo: título en blanco */
+  .proyecto-tab[aria-selected='true'] .proyecto-name {
+    color: #fff;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .proyecto-panel {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  function initProyectos() {
+    const tabs = [...document.querySelectorAll<HTMLButtonElement>('[data-proyecto-tab]')];
+    const panels = [...document.querySelectorAll<HTMLElement>('[data-proyecto-panel]')];
+    const svg = document.getElementById('proyecto-line');
+    const path = svg?.querySelector('path');
+    const grad = svg?.querySelector('linearGradient');
+    if (tabs.length === 0) return;
+    let current = 0;
+    let snake: Animation | null = null;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Altura (y) de la barra: sobre el borde inferior del proyecto
+    const lineY = (i: number) => tabs[i].offsetTop + tabs[i].offsetHeight - 1;
+    // Extremo derecho del trazo (1px adentro para que no se recorte)
+    const rightX = () => (svg?.clientWidth ?? 0) - 1;
+
+    // Dibuja la barra estática bajo el proyecto activo
+    const drawStatic = () => {
+      if (!path || !grad) return;
+      const x = rightX();
+      grad.setAttribute('x2', String(x));
+      path.setAttribute('d', `M0 ${lineY(current)} H${x}`);
+      path.style.strokeDasharray = '';
+      path.style.strokeDashoffset = '';
+    };
+
+    // Efecto snake: un trazo del ancho de la barra recorre
+    // línea anterior → borde lateral → línea nueva.
+    // El lado se alterna en cada cambio: derecha, izquierda, derecha...
+    let viaRight = true;
+    const moveSnake = (from: number, to: number) => {
+      if (!path || !grad || reduceMotion || from === to) return drawStatic();
+      snake?.cancel();
+
+      const x = rightX();
+      const y1 = lineY(from);
+      const y2 = lineY(to);
+      const dy = Math.abs(y2 - y1);
+      const total = x + dy + x;
+
+      // Por la derecha: sale hacia la derecha y entra de derecha a izquierda.
+      // Por la izquierda: sale hacia la izquierda y entra de izquierda a derecha.
+      const [start, edge] = viaRight ? [0, x] : [x, 1];
+      viaRight = !viaRight;
+
+      grad.setAttribute('x2', String(x));
+      path.setAttribute('d', `M${start} ${y1} H${edge} V${y2} H${start}`);
+      path.style.strokeDasharray = `${x} ${total}`;
+
+      snake = path.animate(
+        [{ strokeDashoffset: 0 }, { strokeDashoffset: -(x + dy) }],
+        {
+          duration: Math.min(450 + dy * 1.2, 900),
+          easing: 'cubic-bezier(0.65, 0, 0.35, 1)',
+          fill: 'forwards',
+        }
+      );
+      snake.onfinish = () => {
+        snake?.cancel();
+        snake = null;
+        drawStatic();
+      };
+    };
+
+    const select = (index: number, focus = false) => {
+      const previous = current;
+      current = index;
+      moveSnake(previous, index);
+      tabs.forEach((tab, i) => {
+        const active = i === index;
+        tab.setAttribute('aria-selected', String(active));
+        tab.tabIndex = active ? 0 : -1;
+        if (active && focus) tab.focus();
+      });
+      panels.forEach((panel, i) => {
+        const active = i === index;
+        panel.classList.toggle('opacity-100', active);
+        panel.classList.toggle('opacity-0', !active);
+        panel.classList.toggle('pointer-events-none', !active);
+        // Los paneles ocultos siguen montados (para el fundido) pero inertes
+        panel.inert = !active;
+      });
+    };
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(i));
+      // Flechas arriba/abajo para moverse entre proyectos
+      tab.addEventListener('keydown', (e) => {
+        if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+        e.preventDefault();
+        const next = (i + (e.key === 'ArrowDown' ? 1 : -1) + tabs.length) % tabs.length;
+        select(next, true);
+      });
+    });
+
+    // Posición inicial; se redibuja al cambiar el tamaño de la ventana
+    drawStatic();
+    window.addEventListener('resize', () => {
+      if (!snake) drawStatic();
+    });
+    // Las fuentes web pueden cambiar la altura de cada proyecto al terminar de cargar
+    document.fonts?.ready.then(() => {
+      if (!snake) drawStatic();
+    });
+
+    // Todos los paneles quedan montados (apilados) para poder hacer el fundido;
+    // los inactivos se marcan como inertes en lugar de ocultarse con hidden
+    panels.forEach((panel, i) => {
+      panel.hidden = false;
+      panel.inert = i !== 0;
+    });
+  }
+
+  document.addEventListener('astro:page-load', initProyectos);
+</script>

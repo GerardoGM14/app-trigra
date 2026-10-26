@@ -1,0 +1,355 @@
+---
+// Modal "Ver caso completo" de un proyecto (reutilizable).
+// Se abre con cualquier botón que tenga data-open-modal="<id del modal>".
+import fs from 'node:fs';
+import path from 'node:path';
+import type { Proyecto } from '@data/proyectos';
+import { imageSize } from '@utils/imageSize';
+import CtaBanner from '@components/CtaBanner.astro';
+
+interface Props {
+  id: string;
+  proyecto: Proyecto;
+  index: number; // posición en la lista (0, 1, 2...)
+  total: number;
+}
+
+const { id, proyecto: p, index, total } = Astro.props;
+
+const pad = (n: number) => String(n).padStart(2, '0');
+const order = `${pad(index + 1)}/${pad(total)}`;
+
+// Título: la parte "highlight" va con degradado y el resto en blanco
+const highlight = p.highlight ?? p.name;
+const rest = p.name.startsWith(highlight) ? p.name.slice(highlight.length) : '';
+
+const existsInPublic = (src: string) => fs.existsSync(path.join(process.cwd(), 'public', src));
+const hasCaseImage = existsInPublic(p.caseImage);
+// Medidas reales de la captura: reservan su alto antes de que cargue (sin saltos)
+const caseSize = imageSize(p.caseImage);
+const hasUrl = p.url && p.url !== '#';
+const VisitTag = hasUrl ? 'a' : 'span';
+
+// "Detrás del proyecto": tres tarjetas
+const detalles = [
+  { label: 'El desafío', ...p.challenge },
+  { label: 'La solución', ...p.solution },
+  { label: 'El resultado', ...p.result },
+];
+
+// Galería "Vista del proyecto": 4 imágenes por tipo.
+// El switch Página web / Panel Administrativo solo aparece si hasAdmin es true.
+const gallery = [
+  { key: 'web', label: 'Página web' },
+  ...(p.hasAdmin ? [{ key: 'admin', label: 'Panel Administrativo' }] : []),
+].map((g) => ({
+  ...g,
+  images: [1, 2, 3, 4].map((n) => {
+    const src = `/images/proyectos/${p.slug}/${g.key}-${n}.webp`;
+    // Versión grande para el carrusel (si no existe, se usa la normal)
+    const lg = `/images/proyectos/${p.slug}/${g.key}-${n}-lg.webp`;
+    return { src, large: existsInPublic(lg) ? lg : src, exists: existsInPublic(src) };
+  }),
+}));
+---
+
+<dialog
+  id={id}
+  class="app-modal proyecto-modal m-auto w-[min(1100px,calc(100%-2rem))] max-h-[calc(100dvh-2rem)] overflow-hidden rounded-2xl border-0 bg-[#0B131C] p-0 text-trigra-text"
+  aria-labelledby={`${id}-title`}
+>
+  <!-- Cerrar: fuera del scroll para que siempre esté visible -->
+  <button
+    type="button"
+    data-close-modal
+    class="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-[#0B131C]/90 text-gray-200 transition-colors hover:bg-[#1A2633] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40 sm:right-6 sm:top-6"
+    aria-label="Cerrar"
+  >
+    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+      <path d="M6 6l12 12M18 6L6 18"></path>
+    </svg>
+  </button>
+
+  <!-- Contenedor con scroll: todo el modal se desplaza si el contenido es largo -->
+  <div class="proyecto-modal-scroll max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain">
+  <!-- Envoltura: las decoraciones se ubican respecto al contenido completo -->
+  <div class="relative">
+    <!-- Brillo superior + redes decorativas -->
+    <div
+      class="pointer-events-none absolute inset-x-0 top-0 h-80 bg-[radial-gradient(ellipse_at_50%_0%,rgb(0_123_197/0.22),transparent_70%)]"
+      aria-hidden="true"
+    >
+    </div>
+    <img
+      src="/icons/icon-red.svg"
+      alt=""
+      aria-hidden="true"
+      class="pointer-events-none absolute left-0 top-0 w-48 select-none opacity-[0.15] sm:w-72"
+      width="360"
+      height="399"
+    />
+    <img
+      src="/icons/icon-red.svg"
+      alt=""
+      aria-hidden="true"
+      class="pointer-events-none absolute bottom-0 left-0 w-40 -scale-y-100 select-none opacity-[0.15] sm:w-60"
+      width="360"
+      height="399"
+    />
+
+
+    <div class="relative px-5 pb-10 pt-14 text-center sm:px-12 sm:pb-14 sm:pt-16">
+      <!-- Etiqueta con número de orden -->
+      <p data-modal-enter style="--enter-delay: 80ms" class="flex items-center justify-center gap-3 font-display text-xs uppercase tracking-[0.2em] text-gray-400 sm:text-sm">
+        <span class="h-1 w-5 rounded-full bg-[#93FE69]" aria-hidden="true"></span>
+        Proyecto [{order}]
+      </p>
+
+      <!-- Título -->
+      <h3 id={`${id}-title`} data-modal-enter style="--enter-delay: 140ms" class="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl">
+        <span class="text-gradient-reverse">{highlight}</span>{rest}
+      </h3>
+
+      <!-- Año + etiquetas -->
+      <ul data-modal-enter style="--enter-delay: 200ms" class="mt-4 flex flex-wrap items-center justify-center gap-2 text-sm text-gray-300">
+        {
+          [String(p.year), ...p.tags].map((tag) => (
+            <li class="rounded-md border border-white/10 bg-white/5 px-2.5 py-0.5">{tag}</li>
+          ))
+        }
+      </ul>
+
+      <!-- Descripción -->
+      <div data-modal-enter style="--enter-delay: 260ms" class="proyecto-modal-desc mx-auto mt-6 max-w-4xl text-sm text-gray-300 sm:text-base">
+        {p.description.map((line) => <p set:html={line} />)}
+      </div>
+
+      <!-- Visitar página (sin URL se muestra atenuado y no es un enlace) -->
+      <VisitTag
+        href={hasUrl ? p.url : undefined}
+        target={hasUrl ? '_blank' : undefined}
+        rel={hasUrl ? 'noopener noreferrer' : undefined}
+        aria-disabled={hasUrl ? undefined : 'true'}
+        data-modal-enter
+        style="--enter-delay: 320ms"
+        class:list={[
+          'mt-7 inline-flex items-center gap-2 rounded-lg bg-[#007BC5] px-6 py-2.5 font-display text-base font-medium text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40',
+          hasUrl ? 'hover:bg-[#0069A8]' : 'cursor-not-allowed opacity-60',
+        ]}
+      >
+        Visitar página
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M7 17L17 7M8 7h9v9"></path>
+        </svg>
+      </VisitTag>
+
+      <!-- Captura de la web: se muestra completa; lo que se desplaza es el modal -->
+      <div data-modal-enter style="--enter-delay: 400ms" class="mx-auto mt-10 max-w-4xl overflow-hidden rounded-lg bg-[#0C1218] text-left shadow-2xl shadow-black/40">
+        {
+          hasCaseImage ? (
+            <img
+              src={p.caseImage}
+              alt={`Captura de la página web de ${p.name}`}
+              width={caseSize?.width}
+              height={caseSize?.height}
+              class="modal-img block h-auto w-full"
+              loading="lazy"
+              decoding="async"
+            />
+          ) : (
+            <div class="flex h-[45vh] max-h-[480px] min-h-[240px] flex-col items-center justify-center gap-2 bg-gradient-to-b from-[#121A21] to-[#0A0D10] p-6 text-center">
+              <span class="font-display text-2xl font-bold text-white/80">{p.name}</span>
+              <span class="text-sm text-gray-500">Captura próximamente</span>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Parte clara: detrás del proyecto, galería y stack ===== -->
+  <div class="relative overflow-hidden bg-white px-5 pb-10 pt-12 text-gray-900 sm:px-12 sm:pb-14 sm:pt-14">
+    <!-- Red decorativa (esquina superior derecha) -->
+    <img
+      src="/icons/icon-red.svg"
+      alt=""
+      aria-hidden="true"
+      class="pointer-events-none absolute right-0 top-0 w-48 -scale-x-100 select-none opacity-[0.69] sm:w-72"
+      width="360"
+      height="399"
+    />
+
+    <!-- Detrás del proyecto -->
+    <h4 class="relative font-display text-xl font-bold tracking-tight text-[#0B66B1] sm:text-2xl">Detrás del proyecto</h4>
+    <div class="relative mt-6 grid gap-4 md:grid-cols-3">
+      {
+        detalles.map((d, i) => (
+          <article class="rounded-xl bg-[#EDF1F7] p-5 sm:p-6">
+            <p class="flex items-center gap-2.5 font-display text-[0.7rem] uppercase tracking-[0.15em] text-gray-700 sm:text-xs">
+              <span class="h-1 w-5 bg-[#0B66B1]" aria-hidden="true"></span>
+              [{pad(i + 1)}] {d.label}
+            </p>
+            <h5 class="mt-3 font-display text-lg/tight font-bold sm:text-xl/tight">{d.title}</h5>
+            <div class="mt-2.5 space-y-1 text-xs/normal text-gray-700 sm:text-[0.8125rem]/normal">
+              {d.text.map((t) => <p>{t}</p>)}
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+    <!-- Vista del proyecto -->
+    <div class="mt-12 flex flex-wrap items-center justify-between gap-4" data-gallery>
+      <!-- El texto ocupa el espacio libre; el switch se mantiene a su derecha -->
+      <div class="min-w-0 flex-[1_1_18rem]">
+        <h4 class="font-display text-xl font-bold tracking-tight text-[#0B66B1] sm:text-2xl">Vista del proyecto</h4>
+        <p class="mt-1 text-sm text-gray-700">
+          Una selección de las principales vistas desarrolladas para la nueva experiencia de {p.name}.
+        </p>
+      </div>
+
+      {
+        gallery.length > 1 && (
+          <div class="flex shrink-0 rounded-lg bg-[#EDF1F7] p-1" role="tablist" aria-label="Tipo de vista">
+            {gallery.map((g, i) => (
+              <button
+                type="button"
+                role="tab"
+                data-gallery-tab={g.key}
+                aria-selected={i === 0 ? 'true' : 'false'}
+                class="gallery-tab rounded-md px-3 py-1.5 font-display text-xs font-medium text-gray-800 transition-colors hover:text-[#0B66B1] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#007BC5]/50 sm:px-4 sm:text-sm"
+              >
+                {g.label}
+              </button>
+            ))}
+          </div>
+        )
+      }
+
+      <!-- Galería: 4 vistas por tipo -->
+      {
+        gallery.map((g, i) => (
+          <ul
+            data-gallery-panel={g.key}
+            class="grid w-full grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 [&[hidden]]:hidden"
+            hidden={i !== 0}
+          >
+            {g.images.map((img, n) =>
+              img.exists ? (
+                <li class="gallery-item" style={`--i: ${n}`}>
+                  <!-- Al pulsar, se abre en grande en el carrusel -->
+                  <button
+                    type="button"
+                    data-lightbox-item
+                    data-large={img.large}
+                    aria-label={`Ampliar vista ${n + 1} de ${g.label.toLowerCase()}`}
+                    class="group block aspect-[2/1] w-full cursor-zoom-in overflow-hidden rounded-md shadow-md ring-1 ring-black/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#007BC5]"
+                  >
+                    <img
+                      src={img.src}
+                      alt={`${p.name}: ${g.label.toLowerCase()}, vista ${n + 1}`}
+                      class="modal-img h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </button>
+                </li>
+              ) : (
+                <li class="gallery-item flex aspect-[2/1] items-center justify-center rounded-md bg-[#EDF1F7] text-xs text-gray-500 ring-1 ring-black/5" style={`--i: ${n}`}>
+                  Vista {n + 1} próximamente
+                </li>
+              )
+            )}
+          </ul>
+        ))
+      }
+    </div>
+
+    <!-- Stack tecnológico -->
+    <div class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 rounded-lg bg-[#EDF1F7] px-4 py-3 sm:px-5">
+      <p class="flex items-center gap-3 font-display text-sm font-medium text-gray-800 sm:text-base">
+        <img src="/icons/icon-terminal.svg" alt="" aria-hidden="true" class="h-3.5 w-auto" width="14" height="11" />
+        Stack tecnológico e infraestructura
+      </p>
+      <ul class="flex flex-wrap gap-2">
+        {
+          p.stack.map((tech) => (
+            <li class="rounded-md border border-gray-400 bg-white px-2 py-0.5 text-sm text-gray-800">{tech}</li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <!-- Llamado a la acción: ¿Tienes un proyecto en mente? (cierra el modal y va a #contacto) -->
+    <CtaBanner inModal class="mt-10" prefill={`Hola, vi el proyecto ${p.name} y me gustaría desarrollar algo similar.`} />
+  </div>
+  </div>
+</dialog>
+
+<style>
+  /* Al cambiar el switch, las 4 vistas entran escalonadas */
+  [data-gallery-panel].is-entering .gallery-item {
+    animation: gallery-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(var(--i, 0) * 70ms);
+  }
+  @keyframes gallery-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px) scale(0.98);
+    }
+  }
+
+  /* Switch Página web / Panel Administrativo: opción activa en azul */
+  .gallery-tab[aria-selected='true'] {
+    background-color: #007bc5;
+    color: #fff;
+  }
+
+  .proyecto-modal-desc :global(strong) {
+    font-weight: 700;
+    color: #fff;
+  }
+
+  /* Barra de desplazamiento fina del modal.
+     contain: paint aísla el contenido que se desplaza para que el navegador
+     no repinte nada fuera de esta caja al hacer scroll. */
+  .proyecto-modal-scroll {
+    contain: paint;
+    scrollbar-width: thin;
+    scrollbar-color: rgb(255 255 255 / 0.25) transparent;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-gallery-panel].is-entering .gallery-item {
+      animation: none;
+    }
+  }
+</style>
+
+<script>
+  // Abrir/cerrar (animado), Esc, clic fuera, precarga y fundido de imágenes:
+  // lógica compartida por todos los modales.
+  import '../scripts/modal';
+
+  // Switch de la galería: muestra las vistas del tipo elegido
+  document.addEventListener('click', (e) => {
+    const galleryTab = (e.target as HTMLElement).closest<HTMLElement>('[data-gallery-tab]');
+    if (!galleryTab) return;
+    const gallery = galleryTab.closest('[data-gallery]');
+    const key = galleryTab.dataset.galleryTab;
+    gallery?.querySelectorAll<HTMLElement>('[data-gallery-tab]').forEach((tab) => {
+      tab.setAttribute('aria-selected', String(tab === galleryTab));
+    });
+    gallery?.querySelectorAll<HTMLElement>('[data-gallery-panel]').forEach((panel) => {
+      const show = panel.dataset.galleryPanel === key;
+      const wasHidden = panel.hidden;
+      panel.hidden = !show;
+      // Reinicia la animación de entrada solo en el panel que aparece
+      if (show && wasHidden) {
+        panel.classList.remove('is-entering');
+        void panel.offsetWidth; // fuerza el reflow para que la animación vuelva a correr
+        panel.classList.add('is-entering');
+      }
+    });
+  });
+</script>
