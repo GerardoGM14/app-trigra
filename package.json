@@ -3,6 +3,7 @@
   "type": "module",
   "version": "0.1.0",
   "private": true,
+  "license": "UNLICENSED",
   "description": "Landing page (coming soon) de Trigra",
   "scripts": {
     "dev": "astro dev",
