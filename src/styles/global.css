@@ -1,7 +1,5 @@
-/* Fuentes de la marca vía Google Fonts (Space Grotesk + Plus Jakarta Sans).
-   Roxa Sans es de pago; se usa la body como fallback donde aplique.
-   El @import debe ir antes que las directivas @tailwind. */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap');
+/* Las fuentes de la marca (Space Grotesk + Plus Jakarta Sans) se sirven desde el
+   propio sitio con @fontsource: ver los imports en BaseLayout.astro. */
 
 @tailwind base;
 @tailwind components;
@@ -11,17 +9,28 @@
   html {
     font-family: theme('fontFamily.body');
     scroll-behavior: smooth;
+    /* Compensa el navbar fijo al saltar a una sección (#ancla) */
+    scroll-padding-top: 6rem;
   }
 
   body {
     @apply text-trigra-text antialiased;
     min-height: 100vh;
-
-    /* Fondo = imagen + gradiente radial de marca ENCIMA (oscurece hacia los bordes).
-       El primer background-image queda como capa superior, por eso el gradiente va 1º.
-       Coloca tu imagen en: public/images/background-trigra.webp
-       Los stops usan alpha para dejar ver la imagen por el centro. */
     background-color: theme('colors.trigra.grad-3');
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: theme('fontFamily.display');
+  }
+}
+
+@layer components {
+  /* Fondo de /proximamente y 404: imagen + gradiente radial de marca ENCIMA.
+     Va como clase (no en el body de todas las páginas) para que la página
+     principal no descargue esta imagen. Uso: <BaseLayout bodyClass="bg-proximamente"> */
+  .bg-proximamente {
     background-image:
       radial-gradient(
         circle at 50% 0%,
@@ -36,14 +45,6 @@
     background-attachment: fixed, fixed;
   }
 
-  h1,
-  h2,
-  h3 {
-    font-family: theme('fontFamily.display');
-  }
-}
-
-@layer components {
   /* Texto con gradiente de marca (#93FE69 → #6ECFFF).
      Requiere -webkit-background-clip para recortar el fondo a las letras. */
   .text-gradient {
@@ -54,6 +55,51 @@
     color: transparent;
   }
 
+  /* Animaciones de entrada al cargar la página.
+     Uso: class="enter-up" style="--enter-delay: 200ms" para escalonar. */
+  .enter-up,
+  .enter-down,
+  .enter-fade {
+    animation-duration: 0.7s;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    animation-fill-mode: both;
+    animation-delay: var(--enter-delay, 0ms);
+  }
+  .enter-up {
+    animation-name: enter-up;
+  }
+  .enter-down {
+    animation-name: enter-down;
+  }
+  .enter-fade {
+    animation-name: enter-fade;
+    animation-duration: 1.2s;
+  }
+
+  /* Animación al aparecer con el scroll.
+     Uso: data-reveal (+ style="--enter-delay: 200ms" para escalonar).
+     Solo se ocultan cuando el script ya cargó (clase .reveal-ready en <html>),
+     así sin JS el contenido se ve normal. */
+  .reveal-ready [data-reveal]:not(.is-visible) {
+    opacity: 0;
+  }
+  .reveal-ready [data-reveal].is-visible {
+    animation: enter-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: var(--enter-delay, 0ms);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .enter-up,
+    .enter-down,
+    .enter-fade,
+    .reveal-ready [data-reveal].is-visible {
+      animation: none;
+    }
+    .reveal-ready [data-reveal]:not(.is-visible) {
+      opacity: 1;
+    }
+  }
+
   /* Misma técnica, dirección invertida (verde → celeste). */
   .text-gradient-reverse {
     background-image: linear-gradient(90deg, #93fe69 0%, #6ecfff 100%);
@@ -61,5 +107,105 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
     color: transparent;
+  }
+}
+
+@keyframes enter-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+@keyframes enter-down {
+  from {
+    opacity: 0;
+    transform: translateY(-18px);
+  }
+}
+
+@keyframes enter-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Bloquea el scroll de la página mientras hay un modal abierto */
+html:has(dialog[open]) {
+  overflow: hidden;
+}
+
+/* ===== Modales compartidos (<dialog class="app-modal">) =====
+   Animación de entrada/salida, fondo, contenido escalonado y fundido de imágenes.
+   La lógica está en src/scripts/modal.ts. */
+/* Fondo oscuro detrás del modal.
+   Sin backdrop-filter (blur): recalcular el desenfoque en cada cuadro hacía
+   que el scroll dentro del modal se sintiera con lag. */
+.app-modal::backdrop {
+  background: rgb(3 11 19 / 0.82);
+}
+
+/* Entrada y salida */
+.app-modal[open] {
+  animation: modal-in 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.app-modal[open]::backdrop {
+  animation: modal-fade 0.35s ease;
+}
+.app-modal.is-closing {
+  animation: modal-out 0.2s ease forwards;
+}
+.app-modal.is-closing::backdrop {
+  animation: modal-fade 0.2s ease reverse forwards;
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+}
+@keyframes modal-out {
+  to {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+@keyframes modal-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Contenido del encabezado: entra escalonado cada vez que se abre el modal */
+.app-modal[open] [data-modal-enter] {
+  animation: modal-enter-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--enter-delay, 0ms);
+}
+@keyframes modal-enter-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+/* Imágenes: aparecen con fundido cuando terminan de cargar (sin "pop") */
+.modal-img {
+  transition: opacity 0.5s ease;
+}
+.modal-img:not(.is-loaded) {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-modal[open],
+  .app-modal[open]::backdrop,
+  .app-modal.is-closing,
+  .app-modal.is-closing::backdrop,
+  .app-modal[open] [data-modal-enter] {
+    animation: none;
+  }
+  .modal-img {
+    transition: none;
   }
 }

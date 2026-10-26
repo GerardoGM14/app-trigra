@@ -8,4 +8,11 @@ export default defineConfig({
   site: 'https://trigra-app.web.app',
   integrations: [tailwind()],
   output: 'static',
+  vite: {
+    build: {
+      // No incrustar scripts en el HTML: el CSP de firebase.json solo permite
+      // scripts propios desde archivo (script-src 'self').
+      assetsInlineLimit: 0,
+    },
+  },
 });

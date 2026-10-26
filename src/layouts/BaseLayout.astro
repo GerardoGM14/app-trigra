@@ -1,15 +1,26 @@
 ---
+// Fuentes de la marca servidas desde el propio sitio (solo pesos usados, subconjunto latino)
+import '@fontsource/space-grotesk/latin-400.css';
+import '@fontsource/space-grotesk/latin-500.css';
+import '@fontsource/space-grotesk/latin-700.css';
+import '@fontsource/plus-jakarta-sans/latin-400.css';
+import '@fontsource/plus-jakarta-sans/latin-700.css';
 import '@styles/global.css';
+// Fuente de los titulares (el texto principal de la página): se precarga
+import displayBold from '@fontsource/space-grotesk/files/space-grotesk-latin-700-normal.woff2?url';
 import { ClientRouter } from 'astro:transitions';
 
 interface Props {
   title?: string;
   description?: string;
+  /** Clases extra para el <body> (ej. el fondo de /proximamente) */
+  bodyClass?: string;
 }
 
 const {
   title = 'Trigra — Próximamente',
   description = 'Trigra está en construcción. Muy pronto lanzaremos algo increíble.',
+  bodyClass,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -20,7 +31,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="/images/icono-logo.png?v=2" />
+    <link rel="icon" type="image/png" href="/images/icono-logo.png?v=3" />
     <meta name="generator" content={Astro.generator} />
 
     <!-- Transiciones suaves entre vistas/rutas -->
@@ -40,8 +51,17 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+
+    <!-- Recursos que cada página quiera adelantar (ej. preload de la imagen principal) -->
+    <link rel="preload" href={displayBold} as="font" type="font/woff2" crossorigin />
+    <slot name="head" />
   </head>
-  <body>
+  <body class={bodyClass}>
     <slot />
+
+    <!-- Animación de entrada de secciones al hacer scroll -->
+    <script>
+      import '../scripts/reveal';
+    </script>
   </body>
 </html>
